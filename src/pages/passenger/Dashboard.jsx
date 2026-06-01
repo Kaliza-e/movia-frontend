@@ -52,14 +52,12 @@ const statusConfig = {
 };
 
 const PassengerDashboard = () => {
-  const { user } = useAuth();
+  const { user, displayName } = useAuth();
   const navigate = useNavigate();
 
   const [recentTickets, setRecentTickets] = useState([]);
   const [stats, setStats] = useState({ total: 0, upcoming: 0, completed: 0 });
   const [loading, setLoading] = useState(true);
-
-  const displayName = user?.first_name || user?.name?.split(' ')[0] || 'there';
 
   useEffect(() => { loadData(); }, [user]);
 

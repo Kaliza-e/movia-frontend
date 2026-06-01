@@ -101,7 +101,7 @@ export const Layout = ({ children, title, action }) => {
 
       {/* ── Sidebar ── */}
       <aside
-        className={`fixed top-0 left-0 z-50 h-full w-[220px] bg-white border-r border-[#E5E7EB] flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-[#E5E7EB] flex flex-col transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         style={{ boxShadow: '2px 0 16px rgba(108,99,255,0.06)' }}
       >
@@ -182,7 +182,7 @@ export const Layout = ({ children, title, action }) => {
       </aside>
 
       {/* ── Main content ── */}
-      <div className="flex-1 lg:ml-[220px] flex flex-col min-h-screen">
+      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
 
         {/* Topbar */}
         <header className="sticky top-0 z-30 bg-white border-b border-[#E5E7EB]" style={{ boxShadow: '0 1px 8px rgba(108,99,255,0.06)' }}>

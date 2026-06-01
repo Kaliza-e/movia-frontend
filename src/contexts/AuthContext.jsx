@@ -10,6 +10,20 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Helper: extract a display name from whatever shape the backend returns
+  const extractName = (data) => {
+    if (!data) return null;
+    // Try all common field names the backend might use
+    return (
+      data.first_name ||
+      data.firstName ||
+      data.name?.split(' ')[0] ||
+      data.username ||
+      data.email?.split('@')[0] ||
+      null
+    );
+  };
+
   // =========================
   // LOAD TOKEN & USER
   // =========================
@@ -49,19 +63,30 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await authAPI.login(data);
 
-      // Support both flat response (e.g., {token, role}) and nested response (e.g., {token, user: {role}})
+      // Support both flat {token, role, ...} and nested {token, user: {...}}
       const token = res.data?.token;
-      const userData = res.data?.user || res.data;
+      let userData = res.data?.user || res.data;
+
+      // If the login response has no name fields, fetch the full profile
+      if (token && !extractName(userData)) {
+        try {
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          const meRes = await authAPI.me();
+          if (meRes.data) {
+            userData = { ...userData, ...meRes.data };
+          }
+        } catch {
+          // /auth/me failed — proceed with what we have
+        }
+      }
 
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
-      
+
       setToken(token);
       setUser(userData);
 
-      axios.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${token}`;
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       return userData;
 
@@ -91,6 +116,8 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!token,
         isAdmin: user?.role === 'ADMIN',
         isDriver: user?.role === 'DRIVER',
+        // Resolved display name — works regardless of backend field naming
+        displayName: extractName(user) || 'there',
         register,
         login,
         logout,

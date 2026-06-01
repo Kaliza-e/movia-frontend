@@ -296,29 +296,29 @@ export default function LiveTracking() {
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-  <div>
-    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-      <Activity className="w-4 h-4" />
-      Real-time Monitoring
-    </div>
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+            <Activity className="w-4 h-4" />
+            Real-time Monitoring
+          </div>
 
-    <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-text">
-      Fleet Tracking
-    </h1>
+          <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-text">
+            Fleet Tracking
+          </h1>
 
-    <p className="mt-2 text-text-muted text-base lg:text-lg max-w-xl">
-      Monitor buses, track routes, and view live vehicle locations across the network.
-    </p>
-  </div>
+          <p className="mt-2 text-text-muted text-base lg:text-lg max-w-xl">
+            Monitor buses, track routes, and view live vehicle locations across the network.
+          </p>
+        </div>
 
-  <Button
-    onClick={loadBuses}
-    className="h-12 px-6 rounded-2xl"
-  >
-    <RefreshCw className="w-4 h-4 mr-2" />
-    Refresh Data
-  </Button>
-</div>
+        <Button
+          onClick={loadBuses}
+          className="h-12 px-6 rounded-2xl"
+        >
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Refresh Data
+        </Button>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-[380px,1fr]">
         {/* Bus List - Premium Card */}
@@ -349,11 +349,10 @@ export default function LiveTracking() {
                 <div
                   key={bus.id}
                   onClick={() => focusOnBus(bus)}
-                  className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
-                    selectedBus?.id === bus.id
+                  className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${selectedBus?.id === bus.id
                       ? 'border-primary bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg'
                       : 'border-border hover:border-primary/50 hover:bg-muted/50 hover:translate-y-[-2px]'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
@@ -432,15 +431,15 @@ export default function LiveTracking() {
                       </div>
                       <p className="text-sm text-text-muted mb-3">{bus.routeName}</p>
                       <div className="flex items-center gap-4 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Gauge className="w-4 h-4 text-primary" />
-                      <span className="font-bold text-text">{bus.speed} km/h</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-text-muted" />
-                      <span className="text-text-muted">{new Date(bus.lastUpdate).toLocaleTimeString()}</span>
-                    </div>
-                  </div>
+                        <div className="flex items-center gap-2">
+                          <Gauge className="w-4 h-4 text-primary" />
+                          <span className="font-bold text-text">{bus.speed} km/h</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-text-muted" />
+                          <span className="text-text-muted">{new Date(bus.lastUpdate).toLocaleTimeString()}</span>
+                        </div>
+                      </div>
                     </div>
                   </Popup>
                 </Marker>

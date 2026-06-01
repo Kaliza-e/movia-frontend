@@ -49,6 +49,7 @@ function App() {
 
       {/* DRIVER ONLY */}
       <Route path="/driver" element={<DriverDashboard />} />
+     
 
       {/* ADMIN ONLY */}
       <Route path="/admin" element={<AdminDashboard />} />
