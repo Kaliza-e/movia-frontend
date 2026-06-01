@@ -1,44 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
   --font-size: 16px;
-  --background: #f8fafc;
-  --foreground: #111827;
+  --background: #EEF0FF;
+  --foreground: #1A1A2E;
   --card: #ffffff;
-  --card-foreground: #111827;
+  --card-foreground: #1A1A2E;
   --popover: #ffffff;
-  --popover-foreground: #111827;
-  --primary: #2563eb;
+  --popover-foreground: #1A1A2E;
+  --primary: #6C63FF;
   --primary-foreground: #ffffff;
-  --secondary: #60a5fa;
-  --secondary-foreground: #111827;
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
-  --accent: #8b5cf6;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
+  --secondary: #4F8EF7;
+  --secondary-foreground: #1A1A2E;
+  --muted: #F3F4F6;
+  --muted-foreground: #6B7280;
+  --accent: #EEF0FF;
+  --accent-foreground: #6C63FF;
+  --destructive: #EF4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.05);
-  --input: transparent;
-  --input-background: #f3f4f6;
+  --border: #E5E7EB;
+  --input: #ffffff;
+  --input-background: #ffffff;
   --switch-background: #cbd5e1;
-  --font-weight-medium: 500;
+  --font-weight-medium: 600;
   --font-weight-normal: 400;
-  --ring: #2563eb;
-  --chart-1: #2563eb;
-  --chart-2: #8b5cf6;
-  --chart-3: #10b981;
-  --chart-4: #f59e0b;
-  --chart-5: #ef4444;
-  --radius: 1.5rem;
-  --sidebar: #1e293b;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #2563eb;
-  --sidebar-accent: rgba(255, 255, 255, 0.1);
-  --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #ffffff;
+  --ring: #6C63FF;
+  --chart-1: #6C63FF;
+  --chart-2: #4F8EF7;
+  --chart-3: #22C55E;
+  --chart-4: #F59E0B;
+  --chart-5: #EF4444;
+  --radius: 1rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1A1A2E;
+  --sidebar-primary: #6C63FF;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #EEF0FF;
+  --sidebar-accent-foreground: #6C63FF;
+  --sidebar-border: #E5E7EB;
+  --sidebar-ring: #6C63FF;
 }
 
 .dark {
@@ -48,36 +50,34 @@
   --card-foreground: #f8fafc;
   --popover: #1e293b;
   --popover-foreground: #f8fafc;
-  --primary: #3b82f6;
+  --primary: #8B85FF;
   --primary-foreground: #ffffff;
-  --secondary: #60a5fa;
+  --secondary: #74A9FF;
   --secondary-foreground: #f8fafc;
   --muted: #334155;
   --muted-foreground: #94a3b8;
-  --accent: #a78bfa;
-  --accent-foreground: #ffffff;
+  --accent: #1e293b;
+  --accent-foreground: #8B85FF;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.05);
   --input-background: #334155;
   --switch-background: #475569;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --ring: #3b82f6;
-  --chart-1: #3b82f6;
-  --chart-2: #a78bfa;
+  --ring: #8B85FF;
+  --chart-1: #8B85FF;
+  --chart-2: #74A9FF;
   --chart-3: #34d399;
   --chart-4: #fbbf24;
   --chart-5: #f87171;
   --sidebar: #0f172a;
   --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #3b82f6;
+  --sidebar-primary: #8B85FF;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: rgba(255, 255, 255, 0.1);
-  --sidebar-accent-foreground: #ffffff;
+  --sidebar-accent: rgba(255, 255, 255, 0.05);
+  --sidebar-accent-foreground: #f8fafc;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #3b82f6;
+  --sidebar-ring: #8B85FF;
 }
 
 @theme inline {
@@ -128,59 +128,33 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Outfit', sans-serif;
   }
 
   html {
     font-size: var(--font-size);
   }
 
-  h1 {
-    font-size: var(--text-2xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-  }
-
-  h2 {
-    font-size: var(--text-xl);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-  }
-
-  h3 {
-    font-size: var(--text-lg);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
-  }
-
-  h4 {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
-    letter-spacing: -0.04em;
-    line-height: 1.05;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    color: #1A1A2E;
+    letter-spacing: -0.02em;
   }
 
   label {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-size: 13px;
+    font-weight: 500;
+    color: #6B7280;
   }
 
   button {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-medium);
-    line-height: 1.5;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
   }
 
-  input {
-    font-size: var(--text-base);
-    font-weight: var(--font-weight-normal);
-    line-height: 1.5;
+  input, select, textarea {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
   }
 }

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Bus, Lock, Mail, Loader2, ArrowRight } from 'lucide-react';
+import {
+  Bus, Lock, Mail, Loader2, ArrowRight,
+} from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -19,7 +21,6 @@ const Login = () => {
 
     try {
       const response = await login({ email, password });
-
       const loggedUser = response?.user || response;
       const role = loggedUser?.role || 'PASSENGER';
 
@@ -37,55 +38,44 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-primary-light to-secondary p-6 relative overflow-hidden">
-      {/* Grid pattern */}
-      <div className="absolute inset-0 opacity-5"
-        style={{ backgroundImage: "radial-gradient(circle at 2px 2px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
-
-      {/* Floating decorative elements */}
-      <div className="absolute top-20 right-20 w-96 h-96 rounded-full bg-white/10 blur-3xl animate-float-slow" />
-      <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-accent/20 blur-3xl animate-float-medium" />
-      <div className="absolute top-1/2 right-1/4 w-64 h-64 rounded-full bg-white/5 blur-2xl animate-float-fast" />
-
-      {/* Floating bus icon */}
-      <div className="absolute top-12 left-12 w-16 h-16 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center animate-float-slow shadow-xl">
-        <Bus className="w-8 h-8 text-white" />
-      </div>
-
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#EEF0FF', fontFamily: "'Outfit', sans-serif" }}>
       {/* Login Card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl rounded-card p-10">
+        <div className="bg-white border border-[#E5E7EB] rounded-card p-8" style={{ boxShadow: '0 2px 16px rgba(108, 99, 255, 0.07)' }}>
 
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center shadow-xl">
-              <Bus className="w-7 h-7 text-white" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#6C63FF' }}>
+              <Bus className="w-5 h-5 text-white" />
             </div>
-            <span className="text-white text-2xl font-bold tracking-tight">Movia</span>
+            <span className="text-[#1A1A2E] text-xl font-bold tracking-tight">Movia</span>
           </div>
 
           {/* Title */}
-          <h1 className="text-4xl font-bold text-white mb-3 tracking-tight">
+          <h1 className="text-2xl font-semibold text-[#1A1A2E] mb-2">
             Welcome back
           </h1>
-          <p className="text-white/70 text-lg mb-10">
+          <p className="text-[#6B7280] text-sm mb-6">
             Sign in to continue your journey
           </p>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
 
             {/* Email */}
             <div>
-              <label className="text-sm font-semibold text-white/80 mb-2 block">Email</label>
+              <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">Email</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 w-5 h-5" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] w-4 h-4" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all"
+                  style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                  onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                  onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
                   required
                 />
               </div>
@@ -93,15 +83,18 @@ const Login = () => {
 
             {/* Password */}
             <div>
-              <label className="text-sm font-semibold text-white/80 mb-2 block">Password</label>
+              <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 w-5 h-5" />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] w-4 h-4" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-white/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all"
+                  style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                  onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                  onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
                   required
                 />
               </div>
@@ -109,34 +102,35 @@ const Login = () => {
 
             {/* Error */}
             {error && (
-              <div className="p-4 rounded-2xl bg-danger/20 border border-danger/30 backdrop-blur">
-                <p className="text-white text-sm font-medium">{error}</p>
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200">
+                <p className="text-red-600 text-xs font-medium">{error}</p>
               </div>
             )}
 
             {/* Button */}
             <button
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-4 rounded-full bg-white text-primary font-semibold hover:translate-y-[-2px] hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: '#6C63FF' }}
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Signing in...
                 </>
               ) : (
                 <>
                   Sign In
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
 
           {/* Footer */}
-          <p className="text-center text-sm text-white/60 mt-8">
+          <p className="text-center text-xs text-[#6B7280] mt-6">
             Don't have an account?{' '}
-            <Link to="/register" className="text-white font-semibold hover:underline">
+            <Link to="/register" className="text-[#6C63FF] font-semibold hover:underline">
               Create one
             </Link>
           </p>

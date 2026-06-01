@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Bus, Loader2, User, Lock, Phone, Mail, ArrowRight } from 'lucide-react';
+import {
+  Bus, Loader2, User, Lock, Phone, Mail, ArrowRight,
+  Users, Car,
+} from 'lucide-react';
 import { toast } from 'sonner';
 
 const Register = () => {
@@ -32,7 +35,7 @@ const Register = () => {
         role,
       });
 
-      toast.success('Account created successfully!');
+      toast.success('Account created! Welcome to Movia.');
       navigate('/login');
     } catch (error) {
       setError(
@@ -45,151 +48,183 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 p-6">
-
-      {/* background glow */}
-      <div className="absolute w-[500px] h-[500px] bg-primary/20 blur-3xl rounded-full top-10 left-10 animate-pulse" />
-      <div className="absolute w-[400px] h-[400px] bg-indigo-500/10 blur-3xl rounded-full bottom-10 right-10 animate-pulse" />
-
-      {/* Card */}
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: '#EEF0FF', fontFamily: "'Outfit', sans-serif" }}>
+      {/* Register Card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl p-8">
+        <div className="bg-white border border-[#E5E7EB] rounded-card p-8" style={{ boxShadow: '0 2px 16px rgba(108, 99, 255, 0.07)' }}>
 
           {/* Logo */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center shadow-lg">
-              <Bus className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: '#6C63FF' }}>
+              <Bus className="w-5 h-5 text-white" />
             </div>
-            <span className="text-white text-xl font-bold">Movia</span>
+            <span className="text-[#1A1A2E] text-xl font-bold tracking-tight">Movia</span>
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-semibold text-[#1A1A2E] mb-2">
             Create account
           </h1>
-          <p className="text-white/60 mb-8">
-            Join Movia and start traveling smarter
+          <p className="text-[#6B7280] text-sm mb-6">
+            Join Movia and start your journey
           </p>
 
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* Name */}
+            {/* Name row */}
             <div className="grid grid-cols-2 gap-3">
-              <input
-                type="text"
-                placeholder="First name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                required
-              />
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">First Name</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder="Jean"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    className="w-full pl-10 pr-3 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all text-sm"
+                    style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                    onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                    onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">Last Name</label>
+                <input
+                  type="text"
+                  placeholder="Mutoni"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all text-sm"
+                  style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                  onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                  onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
+                  required
+                />
+              </div>
             </div>
 
             {/* Phone */}
-            <div className="relative">
-              <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-              <input
-                type="tel"
-                placeholder="Phone number"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/40"
-              />
+            <div>
+              <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">Phone Number</label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] w-4 h-4" />
+                <input
+                  type="tel"
+                  placeholder="+250 7XX XXX XXX"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all text-sm"
+                  style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                  onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                  onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
+                />
+              </div>
             </div>
 
             {/* Email */}
-            <div className="relative">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                required
-              />
+            <div>
+              <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] w-4 h-4" />
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all text-sm"
+                  style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                  onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                  onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
+                  required
+                />
+              </div>
             </div>
 
             {/* Password */}
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                required
-                minLength={6}
-              />
+            <div>
+              <label className="text-xs font-medium text-[#6B7280] mb-1.5 block">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280] w-4 h-4" />
+                <input
+                  type="password"
+                  placeholder="Min. 6 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border border-[#E5E7EB] text-[#1A1A2E] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#6C63FF] transition-all text-sm"
+                  style={{ boxShadow: '0 0 0 3px rgba(108, 99, 255, 0)' }}
+                  onFocus={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0.15)'}
+                  onBlur={(e) => e.target.style.boxShadow = '0 0 0 3px rgba(108, 99, 255, 0)'}
+                  required
+                  minLength={6}
+                />
+              </div>
             </div>
 
             {/* Role selector */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setRole('PASSENGER')}
-                className={`py-3 rounded-2xl border transition font-medium ${
-                  role === 'PASSENGER'
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-white/5 text-white/70 border-white/20'
-                }`}
-              >
-                Passenger
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setRole('DRIVER')}
-                className={`py-3 rounded-2xl border transition font-medium ${
-                  role === 'DRIVER'
-                    ? 'bg-primary text-white border-primary'
-                    : 'bg-white/5 text-white/70 border-white/20'
-                }`}
-              >
-                Driver
-              </button>
+            <div>
+              <label className="text-xs font-medium text-[#6B7280] mb-2 block">I want to</label>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setRole('PASSENGER')}
+                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border transition-all font-medium text-sm ${role === 'PASSENGER'
+                      ? 'bg-[#6C63FF] text-white border-[#6C63FF]'
+                      : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#6C63FF]'
+                    }`}
+                >
+                  <Users className="w-4 h-4" />
+                  Book tickets
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('DRIVER')}
+                  className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl border transition-all font-medium text-sm ${role === 'DRIVER'
+                      ? 'bg-[#6C63FF] text-white border-[#6C63FF]'
+                      : 'bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#6C63FF]'
+                    }`}
+                >
+                  <Car className="w-4 h-4" />
+                  Drive buses
+                </button>
+              </div>
             </div>
 
             {/* Error */}
             {error && (
-              <div className="text-red-400 text-sm bg-red-500/10 border border-red-500/20 p-3 rounded-2xl">
-                {error}
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200">
+                <p className="text-red-600 text-xs font-medium">{error}</p>
               </div>
             )}
 
             {/* Submit */}
             <button
+              type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-primary text-white font-semibold hover:scale-[1.02] transition disabled:opacity-60"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{ background: '#6C63FF' }}
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin" />
                   Creating account...
                 </>
               ) : (
                 <>
                   Create Account
-                  <ArrowRight className="w-5 h-5" />
+                  <ArrowRight className="w-4 h-4" />
                 </>
               )}
             </button>
           </form>
 
-          {/* footer */}
-          <p className="text-center text-sm text-white/50 mt-6">
+          {/* Footer */}
+          <p className="text-center text-xs text-[#6B7280] mt-6">
             Already have an account?{' '}
-            <Link to="/login" className="text-primary font-semibold">
+            <Link to="/login" className="text-[#6C63FF] font-semibold hover:underline">
               Sign in
             </Link>
           </p>
