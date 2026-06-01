@@ -295,19 +295,30 @@ export default function LiveTracking() {
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-5xl font-bold text-text mb-2 tracking-tight">Live Bus Tracking</h1>
-          <p className="text-lg text-text-muted">Real-time location of all active buses</p>
-        </div>
-        <button
-          onClick={loadBuses}
-          className="inline-flex items-center gap-2 bg-gradient-to-b from-primary-light to-primary text-white font-semibold text-sm px-6 py-3 rounded-full hover:translate-y-[-2px] hover:shadow-lg transition-all"
-        >
-          <RefreshCw className="w-5 h-5" />
-          Refresh
-        </button>
-      </div>
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+  <div>
+    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+      <Activity className="w-4 h-4" />
+      Real-time Monitoring
+    </div>
+
+    <h1 className="text-4xl lg:text-5xl font-bold tracking-tight text-text">
+      Fleet Tracking
+    </h1>
+
+    <p className="mt-2 text-text-muted text-base lg:text-lg max-w-xl">
+      Monitor buses, track routes, and view live vehicle locations across the network.
+    </p>
+  </div>
+
+  <Button
+    onClick={loadBuses}
+    className="h-12 px-6 rounded-2xl"
+  >
+    <RefreshCw className="w-4 h-4 mr-2" />
+    Refresh Data
+  </Button>
+</div>
 
       <div className="grid gap-6 lg:grid-cols-[380px,1fr]">
         {/* Bus List - Premium Card */}
