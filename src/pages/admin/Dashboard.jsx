@@ -60,31 +60,37 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [statsRes, usersRes] = await Promise.all([
+        const [statsRes, usersRes] = await Promise.allSettled([
           statsAPI.getAdminStats(),
           adminAPI.getUsers(),
         ]);
-        if (statsRes.data) {
+
+        if (statsRes.status === 'fulfilled' && statsRes.value.data) {
+          const s = statsRes.value.data;
           setStats({
-            users: statsRes.data.totalUsers || statsRes.data.users || 0,
-            buses: statsRes.data.totalBuses || statsRes.data.buses || 0,
-            routes: statsRes.data.totalRoutes || statsRes.data.routes || 0,
-            bookings: statsRes.data.totalBookings || statsRes.data.bookings || 0,
-            revenue: statsRes.data.totalRevenue || statsRes.data.revenue || 0,
-            drivers: statsRes.data.totalDrivers || statsRes.data.drivers || 0,
+            users: s.totalUsers || s.users || 0,
+            buses: s.totalBuses || s.buses || 0,
+            routes: s.totalRoutes || s.routes || 0,
+            bookings: s.totalBookings || s.bookings || 0,
+            revenue: s.totalRevenue || s.revenue || 0,
+            drivers: s.totalDrivers || s.drivers || 0,
           });
         }
-        const users = usersRes.data || [];
-        setRecentUsers(users.slice(0, 5));
-        if (!statsRes.data?.totalUsers && users.length > 0) {
-          setStats(prev => ({
-            ...prev,
-            users: users.length,
-            drivers: users.filter(u => u.role === 'DRIVER').length,
-          }));
+
+        if (usersRes.status === 'fulfilled') {
+          const users = usersRes.value.data || [];
+          setRecentUsers(users.slice(0, 5));
+          // Compute from users if stats didn't return counts
+          if (statsRes.status !== 'fulfilled' || !statsRes.value.data?.totalUsers) {
+            setStats(prev => ({
+              ...prev,
+              users: users.length,
+              drivers: users.filter(u => u.role === 'DRIVER').length,
+            }));
+          }
         }
       } catch {
-        setStats({ users: 0, buses: 0, routes: 0, bookings: 0, revenue: 0, drivers: 0 });
+        // silently fail — stats stay at 0
       } finally {
         setLoading(false);
       }

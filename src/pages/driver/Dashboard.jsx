@@ -31,11 +31,13 @@ const StatCard = ({ icon: Icon, label, value, sub, iconBg, trend }) => (
 );
 
 const DriverDashboard = () => {
-  const { user, displayName } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const displayName = user?.first_name || user?.name?.split(' ')[0] || 'Driver';
 
   useEffect(() => {
     const fetchSchedules = async () => {

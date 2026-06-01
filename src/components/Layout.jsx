@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -17,6 +17,7 @@ import {
   ChevronRight,
   Search,
   Plus,
+  ChevronDown,
 } from 'lucide-react';
 
 export const Layout = ({ children, title, action }) => {
@@ -138,8 +139,8 @@ export const Layout = ({ children, title, action }) => {
                     to={item.path}
                     onClick={() => setSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${isActive
-                        ? 'text-white'
-                        : 'text-[#6B7280] hover:bg-[#EEF0FF] hover:text-[#6C63FF]'
+                      ? 'text-white'
+                      : 'text-[#6B7280] hover:bg-[#EEF0FF] hover:text-[#6C63FF]'
                       }`}
                     style={isActive ? { background: '#6C63FF' } : {}}
                   >
