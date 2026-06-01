@@ -92,24 +92,24 @@ const Buses = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'ACTIVE':
-        return 'bg-green-500/10 text-green-600';
+        return 'bg-success/10 text-success';
       case 'INACTIVE':
-        return 'bg-red-500/10 text-red-500';
+        return 'bg-danger/10 text-danger';
       case 'MAINTENANCE':
-        return 'bg-amber-500/10 text-amber-600';
+        return 'bg-warning/10 text-warning';
       default:
-        return 'bg-muted text-muted-foreground';
+        return 'bg-muted text-text-muted';
     }
   };
 
   return (
     <Layout>
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Bus Fleet Management</h1>
-            <p className="text-muted-foreground">Manage all buses in the fleet</p>
+            <h1 className="text-5xl font-bold text-text mb-2 tracking-tight">Bus Fleet Management</h1>
+            <p className="text-lg text-text-muted">Manage all buses in the fleet</p>
           </div>
           <button
             onClick={() => {
@@ -121,69 +121,69 @@ const Buses = () => {
               });
               setShowModal(true);
             }}
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold text-sm px-6 py-3 rounded-xl hover:bg-primary/90 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 bg-gradient-to-b from-primary-light to-primary text-white font-semibold text-sm px-8 py-4 rounded-full hover:translate-y-[-2px] hover:shadow-lg transition-all shadow-xl"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             Add Bus
           </button>
         </div>
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input
             type="text"
             placeholder="Search buses by plate number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-surface border border-border text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
           />
         </div>
 
         {/* Buses Grid */}
         {loading ? (
-          <div className="p-8 text-center">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-muted-foreground text-sm">Loading buses...</p>
+          <div className="p-12 text-center">
+            <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-text-muted text-sm">Loading buses...</p>
           </div>
         ) : filteredBuses.length === 0 ? (
-          <div className="p-10 text-center bg-card border border-border rounded-2xl">
-            <Bus className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <p className="font-semibold text-foreground mb-1">No buses found</p>
-            <p className="text-sm text-muted-foreground mb-4">Add your first bus to get started</p>
+          <div className="p-12 text-center bg-surface border border-border rounded-card shadow-card">
+            <Bus className="w-20 h-20 mx-auto mb-6 text-text-muted opacity-50" />
+            <p className="font-bold text-text mb-2 text-lg">No buses found</p>
+            <p className="text-sm text-text-muted mb-6">Add your first bus to get started</p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredBuses.map((bus) => (
-              <div key={bus.id} className="bg-card border border-border rounded-2xl p-5 hover:shadow-lg transition-all">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Bus className="w-6 h-6 text-primary" />
+              <div key={bus.id} className="bg-surface border border-border rounded-card p-6 hover:shadow-card hover:border-primary/30 hover:translate-y-[-4px] transition-all duration-300">
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                    <Bus className="w-7 h-7 text-primary" />
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(bus)}
-                      className="p-2 rounded-lg hover:bg-accent transition-colors"
+                      className="p-2.5 rounded-xl hover:bg-muted transition-colors"
                     >
-                      <Edit className="w-4 h-4 text-muted-foreground" />
+                      <Edit className="w-5 h-5 text-text-muted" />
                     </button>
                     <button
                       onClick={() => handleDelete(bus.id)}
-                      className="p-2 rounded-lg hover:bg-destructive/10 transition-colors"
+                      className="p-2.5 rounded-xl hover:bg-danger/10 transition-colors"
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className="w-5 h-5 text-danger" />
                     </button>
                   </div>
                 </div>
-                <h3 className="font-bold text-lg text-foreground mb-1">{bus.plateNumber}</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Users className="w-4 h-4" />
+                <h3 className="font-bold text-text mb-4 text-xl">{bus.plateNumber}</h3>
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-2 text-text-muted">
+                    <Users className="w-5 h-5" />
                     <span>{bus.capacity} seats</span>
                   </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Activity className="w-4 h-4" />
-                    <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${getStatusColor(bus.status)}`}>
+                  <div className="flex items-center gap-2 text-text-muted">
+                    <Activity className="w-5 h-5" />
+                    <span className={`text-xs font-bold px-3 py-1.5 rounded-full ${getStatusColor(bus.status)}`}>
                       {bus.status || 'ACTIVE'}
                     </span>
                   </div>
@@ -196,54 +196,54 @@ const Buses = () => {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold text-foreground mb-4">
+            <div className="bg-surface border border-border rounded-card p-8 w-full max-w-lg shadow-2xl">
+              <h2 className="text-2xl font-bold text-text mb-6 tracking-tight">
                 {editingBus ? 'Edit Bus' : 'Add New Bus'}
               </h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Plate Number</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Plate Number</label>
                   <input
                     type="text"
                     value={formData.plateNumber}
                     onChange={(e) => setFormData({ ...formData, plateNumber: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Capacity</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Capacity</label>
                   <input
                     type="number"
                     value={formData.capacity}
                     onChange={(e) => setFormData({ ...formData, capacity: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Status</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                   >
                     <option value="ACTIVE">Active</option>
                     <option value="INACTIVE">Inactive</option>
                     <option value="MAINTENANCE">Maintenance</option>
                   </select>
                 </div>
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-4 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-2.5 rounded-xl border border-border text-foreground font-semibold hover:bg-accent transition-colors"
+                    className="flex-1 py-3 rounded-full border border-border text-text font-semibold hover:bg-muted transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                    className="flex-1 py-3 rounded-full bg-gradient-to-b from-primary-light to-primary text-white font-semibold hover:translate-y-[-2px] hover:shadow-lg transition-all"
                   >
                     {editingBus ? 'Update' : 'Create'}
                   </button>

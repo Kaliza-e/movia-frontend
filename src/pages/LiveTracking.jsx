@@ -64,7 +64,7 @@ L.Icon.Default.mergeOptions({
 });
 
 
-// Custom Bus Icon
+// Custom Bus Icon with pulsing effect
 const busIcon = new L.Icon({
 
   iconUrl:
@@ -73,12 +73,12 @@ const busIcon = new L.Icon({
 
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
+      width="48"
+      height="48"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#1a73e8"
-      stroke-width="2"
+      stroke="#2563EB"
+      stroke-width="2.5"
       stroke-linecap="round"
       stroke-linejoin="round">
 
@@ -93,11 +93,11 @@ const busIcon = new L.Icon({
 
   `),
 
-  iconSize: [40, 40],
+  iconSize: [48, 48],
 
-  iconAnchor: [20, 40],
+  iconAnchor: [24, 48],
 
-  popupAnchor: [0, -40],
+  popupAnchor: [0, -48],
 });
 
 
@@ -293,76 +293,76 @@ export default function LiveTracking() {
 
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-8 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Live Bus Tracking</h1>
-          <p className="text-muted-foreground">Real-time location of buses</p>
+          <h1 className="text-5xl font-bold text-text mb-2 tracking-tight">Live Bus Tracking</h1>
+          <p className="text-lg text-text-muted">Real-time location of all active buses</p>
         </div>
         <button
           onClick={loadBuses}
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-colors shadow-lg"
+          className="inline-flex items-center gap-2 bg-gradient-to-b from-primary-light to-primary text-white font-semibold text-sm px-6 py-3 rounded-full hover:translate-y-[-2px] hover:shadow-lg transition-all"
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className="w-5 h-5" />
           Refresh
         </button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[350px,1fr]">
-        {/* Bus List - Modern Card */}
-        <div className="bg-card border border-border rounded-2xl p-5 h-fit">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Bus className="w-5 h-5 text-primary" />
+      <div className="grid gap-6 lg:grid-cols-[380px,1fr]">
+        {/* Bus List - Premium Card */}
+        <div className="bg-surface border border-border rounded-card p-6 h-fit shadow-card">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-text flex items-center gap-2 tracking-tight">
+              <Bus className="w-6 h-6 text-primary" />
               Active Buses
             </h2>
-            <span className="text-xs font-semibold bg-primary/10 text-primary px-2 py-1 rounded-full">
+            <span className="text-xs font-bold bg-success/10 text-success px-3 py-1.5 rounded-full">
               {buses.length} Online
             </span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-4">
             {loading ? (
-              <div className="p-8 text-center">
-                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-                <p className="text-muted-foreground text-sm">Loading buses...</p>
+              <div className="p-10 text-center">
+                <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                <p className="text-text-muted text-sm">Loading buses...</p>
               </div>
             ) : buses.length === 0 ? (
-              <div className="p-8 text-center">
-                <Bus className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-                <p className="text-muted-foreground text-sm">No buses currently online</p>
+              <div className="p-10 text-center">
+                <Bus className="w-14 h-14 mx-auto mb-4 text-text-muted opacity-50" />
+                <p className="text-text-muted text-sm">No buses currently online</p>
               </div>
             ) : (
               buses.map((bus) => (
                 <div
                   key={bus.id}
                   onClick={() => focusOnBus(bus)}
-                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                  className={`p-5 rounded-2xl border-2 cursor-pointer transition-all duration-300 ${
                     selectedBus?.id === bus.id
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/50 hover:bg-accent/30'
+                      ? 'border-primary bg-gradient-to-br from-primary/5 to-accent/5 shadow-lg'
+                      : 'border-border hover:border-primary/50 hover:bg-muted/50 hover:translate-y-[-2px]'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <Bus className="w-4 h-4 text-primary" />
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                        <Bus className="w-5 h-5 text-primary" />
                       </div>
-                      <span className="font-semibold text-foreground">{bus.busNumber}</span>
+                      <span className="font-bold text-text">{bus.busNumber}</span>
                     </div>
-                    <div className="flex items-center gap-1 text-xs font-semibold text-green-600 bg-green-500/10 px-2 py-1 rounded-full">
-                      <Gauge className="w-3 h-3" />
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-success bg-success/10 px-3 py-1.5 rounded-full">
+                      <Gauge className="w-3.5 h-3.5" />
                       {bus.speed} km/h
                     </div>
                   </div>
-                  <div className="space-y-1.5 text-xs">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <MapPin className="w-3 h-3" />
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2 text-text-muted">
+                      <MapPin className="w-4 h-4" />
                       <span>{bus.routeName}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Clock className="w-3 h-3" />
+                    <div className="flex items-center gap-2 text-text-muted">
+                      <Clock className="w-4 h-4" />
                       <span>
                         Updated {new Date(bus.lastUpdate).toLocaleTimeString()}
                       </span>
@@ -374,21 +374,23 @@ export default function LiveTracking() {
           </div>
         </div>
 
-        {/* Map - Modern Card */}
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Navigation className="w-5 h-5 text-primary" />
-              <h2 className="text-lg font-semibold text-foreground">Live Map</h2>
+        {/* Map - Premium Card with floating info */}
+        <div className="bg-surface border border-border rounded-card overflow-hidden shadow-card relative">
+          <div className="p-5 border-b border-border flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                <Navigation className="w-5 h-5 text-primary" />
+              </div>
+              <h2 className="text-xl font-bold text-text tracking-tight">Live Map</h2>
             </div>
             {selectedBus && (
-              <div className="flex items-center gap-2 text-sm">
-                <span className="text-muted-foreground">Tracking:</span>
-                <span className="font-semibold text-primary">{selectedBus.busNumber}</span>
+              <div className="flex items-center gap-3 bg-gradient-to-br from-primary/10 to-accent/10 px-4 py-2 rounded-full">
+                <span className="text-sm text-text-muted">Tracking:</span>
+                <span className="font-bold text-primary">{selectedBus.busNumber}</span>
               </div>
             )}
           </div>
-          <div className="h-[600px]">
+          <div className="h-[650px] relative">
             <MapContainer
               center={mapCenter}
               zoom={13}
@@ -410,20 +412,22 @@ export default function LiveTracking() {
                   icon={busIcon}
                 >
                   <Popup>
-                    <div className="p-2">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Bus className="w-4 h-4 text-primary" />
-                        <h4 className="font-bold text-sm">{bus.busNumber}</h4>
+                    <div className="p-3 min-w-[200px]">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                          <Bus className="w-4 h-4 text-primary" />
+                        </div>
+                        <h4 className="font-bold text-text">{bus.busNumber}</h4>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-2">{bus.routeName}</p>
-                      <div className="flex items-center gap-3 text-xs">
-                    <div className="flex items-center gap-1">
-                      <Gauge className="w-3 h-3" />
-                      <span className="font-semibold">{bus.speed} km/h</span>
+                      <p className="text-sm text-text-muted mb-3">{bus.routeName}</p>
+                      <div className="flex items-center gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Gauge className="w-4 h-4 text-primary" />
+                      <span className="font-bold text-text">{bus.speed} km/h</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{new Date(bus.lastUpdate).toLocaleTimeString()}</span>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-text-muted" />
+                      <span className="text-text-muted">{new Date(bus.lastUpdate).toLocaleTimeString()}</span>
                     </div>
                   </div>
                     </div>

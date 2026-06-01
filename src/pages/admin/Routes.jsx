@@ -98,12 +98,12 @@ const Routes = () => {
 
   return (
     <Layout>
-      <div className="space-y-6 max-w-7xl mx-auto">
+      <div className="space-y-8 max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Routes Management</h1>
-            <p className="text-muted-foreground">Manage all transport routes</p>
+            <h1 className="text-5xl font-bold text-text mb-2 tracking-tight">Routes Management</h1>
+            <p className="text-lg text-text-muted">Manage all transport routes</p>
           </div>
           <button
             onClick={() => {
@@ -117,74 +117,74 @@ const Routes = () => {
               });
               setShowModal(true);
             }}
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold text-sm px-6 py-3 rounded-xl hover:bg-primary/90 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 bg-gradient-to-b from-primary-light to-primary text-white font-semibold text-sm px-8 py-4 rounded-full hover:translate-y-[-2px] hover:shadow-lg transition-all shadow-xl"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-5 h-5" />
             Add Route
           </button>
         </div>
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
           <input
             type="text"
             placeholder="Search routes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+            className="w-full pl-12 pr-4 py-4 rounded-2xl bg-surface border border-border text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm"
           />
         </div>
 
         {/* Routes Grid */}
         {loading ? (
-          <div className="p-8 text-center">
-            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-muted-foreground text-sm">Loading routes...</p>
+          <div className="p-12 text-center">
+            <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-text-muted text-sm">Loading routes...</p>
           </div>
         ) : filteredRoutes.length === 0 ? (
-          <div className="p-10 text-center bg-card border border-border rounded-2xl">
-            <RouteIcon className="w-16 h-16 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <p className="font-semibold text-foreground mb-1">No routes found</p>
-            <p className="text-sm text-muted-foreground mb-4">Create your first route to get started</p>
+          <div className="p-12 text-center bg-surface border border-border rounded-card shadow-card">
+            <RouteIcon className="w-20 h-20 mx-auto mb-6 text-text-muted opacity-50" />
+            <p className="font-bold text-text mb-2 text-lg">No routes found</p>
+            <p className="text-sm text-text-muted mb-6">Create your first route to get started</p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredRoutes.map((route) => (
-              <div key={route.id} className="bg-card border border-border rounded-2xl p-5 hover:shadow-lg transition-all">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <RouteIcon className="w-6 h-6 text-primary" />
+              <div key={route.id} className="bg-surface border border-border rounded-card p-6 hover:shadow-card hover:border-primary/30 hover:translate-y-[-4px] transition-all duration-300">
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                    <RouteIcon className="w-7 h-7 text-primary" />
                   </div>
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(route)}
-                      className="p-2 rounded-lg hover:bg-accent transition-colors"
+                      className="p-2.5 rounded-xl hover:bg-muted transition-colors"
                     >
-                      <Edit className="w-4 h-4 text-muted-foreground" />
+                      <Edit className="w-5 h-5 text-text-muted" />
                     </button>
                     <button
                       onClick={() => handleDelete(route.id)}
-                      className="p-2 rounded-lg hover:bg-destructive/10 transition-colors"
+                      className="p-2.5 rounded-xl hover:bg-danger/10 transition-colors"
                     >
-                      <Trash2 className="w-4 h-4 text-destructive" />
+                      <Trash2 className="w-5 h-5 text-danger" />
                     </button>
                   </div>
                 </div>
-                <h3 className="font-semibold text-foreground mb-2">
+                <h3 className="font-bold text-text mb-4 text-lg">
                   {route.departureLocation} → {route.destinationLocation}
                 </h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-2 text-text-muted">
+                    <MapPin className="w-5 h-5" />
                     <span>{route.distanceKm} km</span>
                   </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-text-muted">
+                    <Clock className="w-5 h-5" />
                     <span>{route.estimatedDurationMinutes} mins</span>
                   </div>
-                  <div className="flex items-center gap-2 text-foreground font-semibold">
-                    <DollarSign className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-text font-bold">
+                    <DollarSign className="w-5 h-5" />
                     <span>RWF {route.price?.toLocaleString()}</span>
                   </div>
                 </div>
@@ -196,72 +196,72 @@ const Routes = () => {
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-            <div className="bg-card border border-border rounded-2xl p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold text-foreground mb-4">
+            <div className="bg-surface border border-border rounded-card p-8 w-full max-w-lg shadow-2xl">
+              <h2 className="text-2xl font-bold text-text mb-6 tracking-tight">
                 {editingRoute ? 'Edit Route' : 'Add New Route'}
               </h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Departure Location</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Departure Location</label>
                   <input
                     type="text"
                     value={formData.departureLocation}
                     onChange={(e) => setFormData({ ...formData, departureLocation: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Destination Location</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Destination Location</label>
                   <input
                     type="text"
                     value={formData.destinationLocation}
                     onChange={(e) => setFormData({ ...formData, destinationLocation: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Distance (km)</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Distance (km)</label>
                   <input
                     type="number"
                     value={formData.distanceKm}
                     onChange={(e) => setFormData({ ...formData, distanceKm: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Price (RWF)</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Price (RWF)</label>
                   <input
                     type="number"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Duration (minutes)</label>
+                  <label className="text-sm font-bold text-text mb-2 block">Duration (minutes)</label>
                   <input
                     type="number"
                     value={formData.estimatedDurationMinutes}
                     onChange={(e) => setFormData({ ...formData, estimatedDurationMinutes: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-input-background border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
+                    className="w-full px-4 py-3 rounded-2xl bg-surface border border-border text-text focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                     required
                   />
                 </div>
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-4 pt-2">
                   <button
                     type="button"
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-2.5 rounded-xl border border-border text-foreground font-semibold hover:bg-accent transition-colors"
+                    className="flex-1 py-3 rounded-full border border-border text-text font-semibold hover:bg-muted transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                    className="flex-1 py-3 rounded-full bg-gradient-to-b from-primary-light to-primary text-white font-semibold hover:translate-y-[-2px] hover:shadow-lg transition-all"
                   >
                     {editingRoute ? 'Update' : 'Create'}
                   </button>

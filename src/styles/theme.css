@@ -2,82 +2,82 @@
 
 :root {
   --font-size: 16px;
-  --background: #eceffd;
-  --foreground: #1e1b4b;
+  --background: #f8fafc;
+  --foreground: #111827;
   --card: #ffffff;
-  --card-foreground: #1e1b4b;
+  --card-foreground: #111827;
   --popover: #ffffff;
-  --popover-foreground: #1e1b4b;
-  --primary: #5c59e8;
+  --popover-foreground: #111827;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
-  --secondary: #eef2ff;
-  --secondary-foreground: #5c59e8;
+  --secondary: #60a5fa;
+  --secondary-foreground: #111827;
   --muted: #f3f4f6;
   --muted-foreground: #6b7280;
   --accent: #8b5cf6;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(92, 89, 232, 0.08);
+  --border: rgba(0, 0, 0, 0.05);
   --input: transparent;
   --input-background: #f3f4f6;
   --switch-background: #cbd5e1;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #5c59e8;
-  --chart-1: #5c59e8;
+  --ring: #2563eb;
+  --chart-1: #2563eb;
   --chart-2: #8b5cf6;
   --chart-3: #10b981;
   --chart-4: #f59e0b;
   --chart-5: #ef4444;
-  --radius: 1.25rem;
-  --sidebar: #4b46b8;
+  --radius: 1.5rem;
+  --sidebar: #1e293b;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #ffffff;
-  --sidebar-primary-foreground: #5c59e8;
-  --sidebar-accent: rgba(255, 255, 255, 0.15);
+  --sidebar-primary-foreground: #2563eb;
+  --sidebar-accent: rgba(255, 255, 255, 0.1);
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #ffffff;
 }
 
 .dark {
-  --background: #0e0d29;
-  --foreground: #f1f0fb;
-  --card: #1b1947;
-  --card-foreground: #f1f0fb;
-  --popover: #1b1947;
-  --popover-foreground: #f1f0fb;
-  --primary: #8a85f4;
-  --primary-foreground: #0e0d29;
-  --secondary: #272461;
-  --secondary-foreground: #f1f0fb;
-  --muted: #272461;
-  --muted-foreground: #9ca3af;
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #60a5fa;
+  --secondary-foreground: #f8fafc;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
   --accent: #a78bfa;
-  --accent-foreground: #0e0d29;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.1);
   --input: rgba(255, 255, 255, 0.05);
-  --input-background: #272461;
-  --switch-background: #373373;
+  --input-background: #334155;
+  --switch-background: #475569;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #8a85f4;
-  --chart-1: #8a85f4;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
   --chart-2: #a78bfa;
   --chart-3: #34d399;
   --chart-4: #fbbf24;
   --chart-5: #f87171;
-  --sidebar: #13123d;
-  --sidebar-foreground: #f1f0fb;
-  --sidebar-primary: #8a85f4;
-  --sidebar-primary-foreground: #13123d;
-  --sidebar-accent: rgba(255, 255, 255, 0.08);
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: rgba(255, 255, 255, 0.1);
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-ring: #8a85f4;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #3b82f6;
 }
 
 @theme inline {
@@ -130,11 +130,6 @@
     @apply bg-background text-foreground;
   }
 
-  /**
-  * Default typography styles for HTML elements (h1-h4, p, label, button, input).
-  * These are in @layer base, so Tailwind utility classes (like text-sm, text-lg) automatically override them.
-  */
-
   html {
     font-size: var(--font-size);
   }
@@ -143,24 +138,32 @@
     font-size: var(--text-2xl);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
   }
 
   h2 {
     font-size: var(--text-xl);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
   }
 
   h3 {
     font-size: var(--text-lg);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
   }
 
   h4 {
     font-size: var(--text-base);
     font-weight: var(--font-weight-medium);
     line-height: 1.5;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
   }
 
   label {

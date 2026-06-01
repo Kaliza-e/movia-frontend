@@ -330,80 +330,73 @@ import confetti from 'canvas-confetti';
 
       <div className="max-w-2xl mx-auto">
 
-        <Card>
+        <Card className="bg-surface border border-border rounded-card shadow-card">
 
-          <CardHeader className="text-center">
+          <CardHeader className="text-center p-10">
 
-            <div className="mx-auto w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mb-4">
+            <div className="mx-auto w-20 h-20 bg-gradient-to-br from-success/10 to-teal-500/10 rounded-full flex items-center justify-center mb-6 shadow-lg">
 
-              <Check className="w-10 h-10 text-green-500" />
+              <Check className="w-10 h-10 text-success" />
 
             </div>
 
-            <CardTitle className="text-2xl">
+            <CardTitle className="text-3xl font-bold text-text tracking-tight">
               Booking Confirmed!
             </CardTitle>
 
-            <CardDescription>
-              Your ticket has been booked
+            <CardDescription className="text-text-muted text-base">
+              Your ticket has been booked successfully
             </CardDescription>
 
           </CardHeader>
 
 
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6 p-10">
 
-            <div className="p-4 rounded-lg bg-muted">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-muted to-background border border-border">
 
-              <p>
-                <strong>ID:</strong>
-                {' '}
-                {bookedTicket.id}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">ID</p>
+                <p className="font-bold text-text">{bookedTicket.id}</p>
+              </div>
 
-              <p>
-                <strong>Route:</strong>
-                {' '}
-                {bookedTicket.routeName}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">Route</p>
+                <p className="font-bold text-text">{bookedTicket.routeName}</p>
+              </div>
 
-              <p>
-                <strong>Bus:</strong>
-                {' '}
-                {bookedTicket.busNumber}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">Bus</p>
+                <p className="font-bold text-text">{bookedTicket.busNumber}</p>
+              </div>
 
-              <p>
-                <strong>Seat:</strong>
-                {' '}
-                {bookedTicket.seatNumber}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">Seat</p>
+                <p className="font-bold text-text">{bookedTicket.seatNumber}</p>
+              </div>
 
-              <p>
-                <strong>Date:</strong>
-                {' '}
-                {bookedTicket.travelDate}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">Date</p>
+                <p className="font-bold text-text">{bookedTicket.travelDate}</p>
+              </div>
 
-              <p>
-                <strong>Departure:</strong>
-                {' '}
-                {bookedTicket.departureTime}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">Departure</p>
+                <p className="font-bold text-text">{bookedTicket.departureTime}</p>
+              </div>
 
-              <p>
-                <strong>Amount:</strong>
-                {' '}
-                KES {bookedTicket.price}
-              </p>
+              <div className="space-y-3">
+                <p className="text-sm text-text-muted">Amount</p>
+                <p className="font-bold text-2xl text-primary">KES {bookedTicket.price}</p>
+              </div>
 
             </div>
 
 
-            <div className="flex gap-3">
+            <div className="flex gap-4">
 
               <Button
-                className="flex-1"
+                className="flex-1 py-4 rounded-full bg-gradient-to-b from-primary-light to-primary text-white font-semibold shadow-lg shadow-primary/25 hover:translate-y-[-2px] transition-all"
                 onClick={() =>
                   navigate('/tickets')
                 }
@@ -415,7 +408,7 @@ import confetti from 'canvas-confetti';
 
                 variant="outline"
 
-                className="flex-1"
+                className="flex-1 py-4 rounded-full"
 
                 onClick={() => {
 
@@ -445,15 +438,15 @@ import confetti from 'canvas-confetti';
 
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-4xl font-bold text-foreground mb-2">Book a Ticket</h1>
-        <p className="text-muted-foreground">Find and book your journey seamlessly</p>
+        <h1 className="text-5xl font-bold text-text mb-3 tracking-tight">Book a Ticket</h1>
+        <p className="text-lg text-text-muted">Find and book your journey seamlessly</p>
       </div>
 
-      {/* Progress Indicators - Modern */}
+      {/* Progress Indicators - Premium SaaS Style */}
       {step < 5 && (
-        <div className="flex items-center justify-between max-w-xl mx-auto mb-8 bg-card border border-border p-5 rounded-2xl shadow-lg">
+        <div className="flex items-center justify-between max-w-2xl mx-auto bg-surface border border-border p-6 rounded-card shadow-card">
           {[
             { s: 1, name: 'Search', icon: Search },
             { s: 2, name: 'Routes', icon: RouteIcon },
@@ -462,61 +455,61 @@ import confetti from 'canvas-confetti';
           ].map((item, idx) => (
             <div key={item.s} className="flex items-center flex-1 last:flex-none">
               <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${
+                className={`w-12 h-12 rounded-2xl flex items-center justify-center text-sm font-bold transition-all duration-300 ${
                   step >= item.s
-                    ? 'bg-primary text-white shadow-lg shadow-primary/30'
-                    : 'bg-muted text-muted-foreground'
+                    ? 'bg-gradient-to-br from-primary to-accent text-white shadow-lg shadow-primary/30'
+                    : 'bg-muted text-text-muted'
                 }`}
               >
-                <item.icon className="w-5 h-5" />
+                <item.icon className="w-6 h-6" />
               </div>
-              <span className={`hidden sm:block ml-2 text-xs font-semibold ${step === item.s ? 'text-primary' : 'text-muted-foreground'}`}>
+              <span className={`hidden sm:block ml-3 text-sm font-bold ${step === item.s ? 'text-primary' : 'text-text-muted'}`}>
                 {item.name}
               </span>
-              {idx < 3 && <div className={`flex-1 h-0.5 mx-3 ${step > item.s ? 'bg-primary' : 'bg-muted'}`} />}
+              {idx < 3 && <div className={`flex-1 h-1 mx-4 rounded-full ${step > item.s ? 'bg-gradient-to-r from-primary to-accent' : 'bg-muted'}`} />}
             </div>
           ))}
         </div>
       )}
 
-      {/* Step 1: Search - Modern */}
+      {/* Step 1: Search - Premium Airline Style */}
       {step === 1 && (
-        <div className="bg-card border border-border rounded-2xl p-8 max-w-md mx-auto shadow-lg">
-          <div className="text-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-primary" />
+        <div className="bg-surface border border-border rounded-card p-10 max-w-lg mx-auto shadow-card">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mx-auto mb-6 shadow-lg">
+              <Search className="w-10 h-10 text-primary" />
             </div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Search Route</h2>
-            <p className="text-muted-foreground">Enter origin and destination to find active routes</p>
+            <h2 className="text-3xl font-bold text-text mb-3 tracking-tight">Search Route</h2>
+            <p className="text-text-muted">Enter origin and destination to find active routes</p>
           </div>
-          <div className="space-y-5">
+          <div className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="from" className="text-sm font-medium">From</Label>
+              <Label htmlFor="from" className="text-sm font-bold text-text">From</Label>
               <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
                 <Input
                   id="from"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
                   placeholder="e.g. Kigali"
-                  className="pl-12 py-3 bg-input-background border border-border rounded-xl"
+                  className="pl-12 py-4 bg-surface border border-border rounded-2xl text-text placeholder:text-text-muted focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="to" className="text-sm font-medium">To</Label>
+              <Label htmlFor="to" className="text-sm font-bold text-text">To</Label>
               <div className="relative">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
                 <Input
                   id="to"
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
                   placeholder="e.g. Musanze"
-                  className="pl-12 py-3 bg-input-background border border-border rounded-xl"
+                  className="pl-12 py-4 bg-surface border border-border rounded-2xl text-text placeholder:text-text-muted focus:ring-2 focus:ring-primary/20"
                 />
               </div>
             </div>
-            <Button className="w-full py-3.5 flex items-center justify-center gap-2 rounded-xl shadow-lg shadow-primary/25" onClick={searchRoutes} disabled={loading}>
+            <Button className="w-full py-4 flex items-center justify-center gap-2 rounded-full bg-gradient-to-b from-primary-light to-primary text-white font-semibold shadow-lg shadow-primary/25 hover:translate-y-[-2px] transition-all" onClick={searchRoutes} disabled={loading}>
               <Search className="w-5 h-5" />
               {loading ? 'Searching...' : 'Search Routes'}
             </Button>
@@ -524,37 +517,37 @@ import confetti from 'canvas-confetti';
         </div>
       )}
 
-      {/* Step 2: Route List - Modern */}
+      {/* Step 2: Route List - Premium Airline Style */}
       {step === 2 && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold text-foreground">Available Routes</h3>
-              <p className="text-muted-foreground">{from} → {to}</p>
+              <h3 className="text-2xl font-bold text-text tracking-tight">Available Routes</h3>
+              <p className="text-text-muted">{from} → {to}</p>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setStep(1)} className="rounded-xl">Back</Button>
+            <Button variant="outline" size="sm" onClick={() => setStep(1)} className="rounded-full">Back</Button>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-6 md:grid-cols-2">
             {routes.map((route) => (
-              <div key={route.id} className="bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-lg transition-all cursor-pointer" onClick={() => loadSchedules(route)}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <Bus className="w-6 h-6 text-primary" />
+              <div key={route.id} className="bg-surface border border-border rounded-card p-6 hover:border-primary/40 hover:shadow-card hover:translate-y-[-4px] transition-all duration-300 cursor-pointer" onClick={() => loadSchedules(route)}>
+                <div className="flex items-start justify-between mb-5">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                    <Bus className="w-7 h-7 text-primary" />
                   </div>
-                  <span className="font-bold text-xl text-primary">
+                  <span className="font-bold text-2xl text-primary">
                     RWF {(route.price || route.amount_paid || '3,000').toLocaleString()}
                   </span>
                 </div>
-                <h4 className="font-bold text-lg text-foreground mb-3">
+                <h4 className="font-bold text-xl text-text mb-4">
                   {route.name || `${route.origin || from} → ${route.destination || to}`}
                 </h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-2 text-text-muted">
+                    <MapPin className="w-5 h-5" />
                     <span>Distance: {route.distance || route.distance_km || '90'} km</span>
                   </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
+                  <div className="flex items-center gap-2 text-text-muted">
+                    <Clock className="w-5 h-5" />
                     <span>Duration: {route.duration || route.estimated_duration_minutes || '120'} mins</span>
                   </div>
                 </div>
@@ -564,43 +557,45 @@ import confetti from 'canvas-confetti';
         </div>
       )}
 
-      {/* Step 3: Schedule List - Modern */}
+      {/* Step 3: Schedule List - Premium Airline Style */}
       {step === 3 && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-primary" />
+            <h3 className="text-2xl font-bold text-text flex items-center gap-3 tracking-tight">
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-primary" />
+              </div>
               Select Schedule
             </h3>
-            <Button variant="outline" size="sm" onClick={() => setStep(2)} className="rounded-xl">Back to Routes</Button>
+            <Button variant="outline" size="sm" onClick={() => setStep(2)} className="rounded-full">Back to Routes</Button>
           </div>
-          <div className="grid gap-4">
+          <div className="grid gap-6">
             {schedules.map((schedule) => (
-              <div key={schedule.id} className="bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-lg transition-all cursor-pointer" onClick={() => selectSchedule(schedule)}>
-                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                  <div className="space-y-3 flex-1">
-                    <div className="flex items-center gap-3 text-lg font-bold text-foreground">
-                      <Clock className="w-5 h-5 text-primary" />
+              <div key={schedule.id} className="bg-surface border border-border rounded-card p-6 hover:border-primary/40 hover:shadow-card hover:translate-y-[-4px] transition-all duration-300 cursor-pointer" onClick={() => selectSchedule(schedule)}>
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                  <div className="space-y-4 flex-1">
+                    <div className="flex items-center gap-4 text-xl font-bold text-text">
+                      <Clock className="w-6 h-6 text-primary" />
                       <span>{schedule.departureTime || schedule.departure_time?.split(' ')[1] || '08:00 AM'}</span>
-                      <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                      <ArrowRight className="w-5 h-5 text-text-muted" />
                       <span>{schedule.arrivalTime || schedule.arrival_time?.split(' ')[1] || '10:00 AM'}</span>
                     </div>
-                    <div className="text-sm text-muted-foreground flex gap-6">
+                    <div className="text-sm text-text-muted flex gap-8">
                       <span className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
+                        <Calendar className="w-5 h-5" />
                         {schedule.date || schedule.departure_time?.split(' ')[0] || 'Today'}
                       </span>
                       <span className="flex items-center gap-2">
-                        <Bus className="w-4 h-4" />
+                        <Bus className="w-5 h-5" />
                         {schedule.busNumber || schedule.plate_number || 'RAB 123A'}
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-semibold bg-green-500/10 text-green-600 px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm font-bold bg-success/10 text-success px-4 py-2 rounded-full">
                       {schedule.availableSeats || 15} Seats available
                     </span>
-                    <Button size="sm" className="rounded-xl">Select</Button>
+                    <Button size="sm" className="rounded-full">Select</Button>
                   </div>
                 </div>
               </div>
@@ -609,25 +604,25 @@ import confetti from 'canvas-confetti';
         </div>
       )}
 
-      {/* Step 4: Seat Selection - Modern */}
+      {/* Step 4: Seat Selection - Premium Airline Style */}
       {step === 4 && (
-        <div className="max-w-md mx-auto space-y-6">
+        <div className="max-w-lg mx-auto space-y-8">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-foreground">Select Your Seat</h3>
-            <Button variant="outline" size="sm" onClick={() => setStep(3)} className="rounded-xl">Back to Schedules</Button>
+            <h3 className="text-2xl font-bold text-text tracking-tight">Select Your Seat</h3>
+            <Button variant="outline" size="sm" onClick={() => setStep(3)} className="rounded-full">Back to Schedules</Button>
           </div>
-          <div className="bg-card border border-border rounded-2xl p-6 shadow-lg">
-            <div className="flex justify-center gap-6 mb-6 text-xs font-semibold">
-              <div className="flex items-center gap-2"><div className="w-5 h-5 bg-muted rounded-lg" /><span>Available</span></div>
-              <div className="flex items-center gap-2"><div className="w-5 h-5 bg-primary rounded-lg" /><span>Selected</span></div>
-              <div className="flex items-center gap-2"><div className="w-5 h-5 bg-muted-foreground/30 rounded-lg" /><span>Taken</span></div>
+          <div className="bg-surface border border-border rounded-card p-8 shadow-card">
+            <div className="flex justify-center gap-8 mb-8 text-sm font-bold">
+              <div className="flex items-center gap-2"><div className="w-6 h-6 bg-muted rounded-xl" /><span>Available</span></div>
+              <div className="flex items-center gap-2"><div className="w-6 h-6 bg-gradient-to-br from-primary to-accent rounded-xl" /><span>Selected</span></div>
+              <div className="flex items-center gap-2"><div className="w-6 h-6 bg-muted-foreground/30 rounded-xl" /><span>Taken</span></div>
             </div>
 
-            <div className="w-full bg-muted/40 border border-border py-3 text-center text-sm font-semibold rounded-xl mb-6 text-muted-foreground">
+            <div className="w-full bg-gradient-to-br from-muted to-background border border-border py-4 text-center text-sm font-bold rounded-2xl mb-8 text-text-muted">
               🚌 Driver Cabin
             </div>
 
-            <div className="grid grid-cols-4 gap-3 max-w-xs mx-auto mb-6">
+            <div className="grid grid-cols-4 gap-4 max-w-sm mx-auto mb-8">
               {generateSeats().slice(0, 24).map((seat) => {
                 const taken = ['A3', 'B7', 'C12', 'D4', 'A5'].includes(seat);
                 const isSelected = selectedSeat === seat;
@@ -636,12 +631,12 @@ import confetti from 'canvas-confetti';
                     key={seat}
                     disabled={taken}
                     onClick={() => setSelectedSeat(seat)}
-                    className={`h-12 rounded-xl text-xs font-bold transition-all ${
+                    className={`h-14 rounded-2xl text-sm font-bold transition-all duration-300 ${
                       taken
-                        ? 'bg-muted-foreground/20 text-muted-foreground/50 cursor-not-allowed'
+                        ? 'bg-muted-foreground/20 text-text-muted/50 cursor-not-allowed'
                         : isSelected
-                        ? 'bg-primary text-white scale-105 shadow-lg shadow-primary/30'
-                        : 'bg-muted hover:bg-primary/10 text-foreground'
+                        ? 'bg-gradient-to-br from-primary to-accent text-white scale-105 shadow-lg shadow-primary/30'
+                        : 'bg-muted hover:bg-primary/10 text-text hover:translate-y-[-2px]'
                     }`}
                   >
                     {seat}
@@ -650,7 +645,7 @@ import confetti from 'canvas-confetti';
               })}
             </div>
 
-            <Button className="w-full py-3.5 rounded-xl shadow-lg shadow-primary/25" disabled={!selectedSeat} onClick={bookTicket} loading={loading}>
+            <Button className="w-full py-4 rounded-full bg-gradient-to-b from-primary-light to-primary text-white font-semibold shadow-lg shadow-primary/25 hover:translate-y-[-2px] transition-all" disabled={!selectedSeat} onClick={bookTicket} loading={loading}>
               {loading ? 'Booking...' : `Confirm Seat ${selectedSeat} & Book`}
             </Button>
           </div>
