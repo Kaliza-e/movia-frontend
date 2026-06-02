@@ -33,9 +33,10 @@ const Schedules = () => {
     e.preventDefault();
     try {
       const payload = {
-        ...formData,
         departureTime: new Date(formData.departureTime).toISOString(),
         arrivalTime: new Date(formData.arrivalTime).toISOString(),
+        bus: { id: Number(formData.busId) },
+        route: { id: Number(formData.routeId) },
       };
       if (editingSchedule) {
         await schedulesAPI.update(editingSchedule.id, payload);
@@ -56,8 +57,8 @@ const Schedules = () => {
     setFormData({
       departureTime: schedule.departureTime ? schedule.departureTime.slice(0, 16) : '',
       arrivalTime: schedule.arrivalTime ? schedule.arrivalTime.slice(0, 16) : '',
-      busId: schedule.bus?.id || '',
-      routeId: schedule.route?.id || '',
+      busId: schedule.bus?.id || schedule.busId || '',
+      routeId: schedule.route?.id || schedule.routeId || '',
     });
     setShowModal(true);
   };

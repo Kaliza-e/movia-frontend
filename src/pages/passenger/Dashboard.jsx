@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { ticketsAPI, statsAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
+import { getDisplayName, getRouteName, getTicketBus, getTicketRoute, getUserId } from '../../utils/data';
 import {
   Ticket, MapPin, Clock, ArrowRight,
   Bus, Calendar, Smartphone,
@@ -59,17 +60,18 @@ const PassengerDashboard = () => {
   const [stats, setStats] = useState({ total: 0, upcoming: 0, completed: 0 });
   const [loading, setLoading] = useState(true);
 
-  const displayName = user?.username || user?.first_name || user?.name?.split(' ')[0] || 'there';
+  const passengerId = getUserId(user);
+  const displayName = getDisplayName(user);
 
-  useEffect(() => { loadData(); }, [user]);
+  useEffect(() => { loadData(); }, [passengerId]);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      if (user?.id) {
+      if (passengerId) {
         const [ticketsRes, statsRes] = await Promise.all([
-          ticketsAPI.getPassengerTickets(user.id),
-          statsAPI.getPassengerStats(user.id),
+          ticketsAPI.getPassengerTickets(passengerId),
+          statsAPI.getPassengerStats(passengerId),
         ]);
         const tickets = ticketsRes.data || [];
         setRecentTickets(tickets.slice(0, 4));

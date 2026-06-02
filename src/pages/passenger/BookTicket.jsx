@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { routesAPI, schedulesAPI, ticketsAPI, searchAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
+import { getRouteName, getUserId } from '../../utils/data';
 import {
   Search, MapPin, Calendar, Clock, Bus, ArrowRight,
   Check, Users, Route as RouteIcon, ChevronRight,
@@ -27,6 +28,7 @@ const inputCls = "w-full px-4 py-3 rounded-xl bg-[#F9FAFB] border border-[#E5E7E
 const BookTicket = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const passengerId = getUserId(user);
 
   const [step, setStep] = useState(1);
   const [from, setFrom] = useState('');
@@ -86,13 +88,13 @@ const BookTicket = () => {
 
   const bookTicket = async () => {
     if (!selectedSeat) { toast.error('Please select a seat'); return; }
+    if (!passengerId) { toast.error('Please log in again before booking.'); return; }
     setLoading(true);
     try {
       const response = await ticketsAPI.book({
-        userId: user?.id,
-        routeId: selectedRoute.id,
+        passengerId,
         scheduleId: selectedSchedule.id,
-        seatNumber: selectedSeat,
+        seatNumber: Number(selectedSeat),
       });
       setBookedTicket(response.data);
       setBookingSuccess(true);
@@ -105,11 +107,11 @@ const BookTicket = () => {
 
   const generateSeats = () => {
     const seats = [];
-    for (let i = 1; i <= 10; i++) for (const row of ['A', 'B', 'C', 'D']) seats.push(`${row}${i}`);
+    for (let i = 1; i <= 40; i++) seats.push(i);
     return seats;
   };
 
-  const takenSeats = ['A3', 'B7', 'C12', 'D4', 'A5'];
+  const takenSeats = [];
 
   // ── Success screen ──────────────────────────────────────────────────────────
   if (bookingSuccess && bookedTicket) {
@@ -126,11 +128,11 @@ const BookTicket = () => {
             <div className="rounded-xl p-5 mb-6 text-left space-y-3" style={{ background: '#F9FAFB', border: '1px solid #E5E7EB' }}>
               {[
                 { label: 'Ticket ID', value: bookedTicket.id },
-                { label: 'Route', value: bookedTicket.routeName },
-                { label: 'Bus', value: bookedTicket.busNumber },
+                { label: 'Route', value: bookedTicket.routeName || getRouteName(bookedTicket.schedule?.route, 'Route details unavailable') },
+                { label: 'Bus', value: bookedTicket.busNumber || bookedTicket.schedule?.bus?.plateNumber || 'Bus pending' },
                 { label: 'Seat', value: bookedTicket.seatNumber },
-                { label: 'Date', value: bookedTicket.travelDate },
-                { label: 'Departure', value: bookedTicket.departureTime },
+                { label: 'Date', value: bookedTicket.travelDate || bookedTicket.schedule?.departureTime?.split('T')[0] },
+                { label: 'Departure', value: bookedTicket.departureTime || bookedTicket.schedule?.departureTime },
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between text-sm">
                   <span className="text-[#6B7280]">{label}</span>
@@ -139,7 +141,7 @@ const BookTicket = () => {
               ))}
               <div className="flex justify-between text-sm pt-2 border-t border-[#E5E7EB]">
                 <span className="text-[#6B7280]">Amount</span>
-                <span className="font-bold text-lg" style={{ color: '#6C63FF' }}>RWF {bookedTicket.price}</span>
+                <span className="font-bold text-lg" style={{ color: '#6C63FF' }}>RWF {bookedTicket.price || bookedTicket.amountPaid || 0}</span>
               </div>
             </div>
 

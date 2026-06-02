@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Lock, Mail, Phone, User, Loader2, Eye, EyeOff, Bus, Zap, Car, Users, CheckCircle } from 'lucide-react';
+import { Lock, Mail, Phone, User, Loader2, Eye, EyeOff, Zap, Car, Users, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import MoviaBrand from '../components/MoviaBrand';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -86,15 +87,7 @@ const Register = () => {
         <div className="absolute bottom-40 left-32 w-2.5 h-2.5 rounded-full" style={{ background: 'rgba(108,99,255,0.15)' }} />
 
         {/* Logo */}
-        <div className="relative flex items-center gap-3 z-10">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-md" style={{ background: '#6C63FF' }}>
-            <Bus className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <span className="text-lg font-bold tracking-tight" style={{ color: '#1A1A2E' }}>Movia</span>
-            <p className="text-[10px] font-medium tracking-widest uppercase" style={{ color: '#6C63FF' }}>Smart Transport</p>
-          </div>
-        </div>
+        <MoviaBrand size="lg" className="relative z-10" />
 
         {/* Center illustration — role cards in blob */}
         <div className="relative flex items-center justify-center z-10 flex-1 py-6">
@@ -167,12 +160,10 @@ const Register = () => {
         <div className="w-full max-w-sm py-2">
 
           {/* Mobile logo */}
-          <div className="flex items-center gap-3 mb-6 lg:hidden">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.2)' }}>
-              <Bus className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-lg font-bold text-white">Movia</span>
-          </div>
+          <MoviaBrand
+            size="md"
+            className="mb-6 lg:hidden"
+          />
 
           {/* Heading */}
           <div className="mb-6">

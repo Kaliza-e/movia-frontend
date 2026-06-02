@@ -28,11 +28,17 @@ const Routes = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...formData,
+        distanceKm: Number(formData.distanceKm),
+        price: Number(formData.price),
+        estimatedDurationMinutes: Number(formData.estimatedDurationMinutes),
+      };
       if (editingRoute) {
-        await routesAPI.update(editingRoute.id, formData);
+        await routesAPI.update(editingRoute.id, payload);
         toast.success('Route updated');
       } else {
-        await routesAPI.create(formData);
+        await routesAPI.create(payload);
         toast.success('Route created');
       }
       setShowModal(false);

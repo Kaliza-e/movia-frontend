@@ -116,7 +116,6 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!token,
         isAdmin: user?.role === 'ADMIN',
         isDriver: user?.role === 'DRIVER',
-        // Resolved display name — works regardless of backend field naming
         displayName: extractName(user) || 'there',
         register,
         login,

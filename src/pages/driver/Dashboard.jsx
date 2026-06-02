@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { driversAPI, schedulesAPI } from '../../services/api';
+import { driversAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
+import { getDisplayName, getUserId } from '../../utils/data';
 import {
   Bus, Navigation, MapPin, Clock, Calendar,
   CheckCircle, TrendingUp, Activity, Car,
-  Gauge, Route as RouteIcon, ArrowRight, Star,
+  Gauge, ArrowRight, Star,
 } from 'lucide-react';
 
 const StatCard = ({ icon: Icon, label, value, sub, iconBg, trend }) => (
@@ -37,13 +38,14 @@ const DriverDashboard = () => {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const displayName = user?.username || user?.first_name || user?.name?.split(' ')[0] || 'Driver';
+  const driverId = getUserId(user);
+  const displayName = getDisplayName(user, 'Driver');
 
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        if (user?.id) {
-          const res = await driversAPI.getMySchedules(user.id);
+        if (driverId) {
+          const res = await driversAPI.getMySchedules(driverId);
           setSchedules(res.data || []);
         }
       } catch {
@@ -53,11 +55,12 @@ const DriverDashboard = () => {
       }
     };
     fetchSchedules();
-  }, [user]);
+  }, [driverId]);
 
   const todaySchedules = schedules.filter(s => {
     const today = new Date().toDateString();
-    return new Date(s.departureTime || s.departure_time || Date.now()).toDateString() === today;
+    const departureTime = s.departureTime || s.departure_time;
+    return departureTime ? new Date(departureTime).toDateString() === today : false;
   });
 
   const upcomingSchedules = schedules.slice(0, 4);

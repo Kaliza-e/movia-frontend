@@ -135,7 +135,7 @@ export const ticketsAPI = {
     api.get('/tickets'),
 
   cancel: (id) =>
-    api.put(`/tickets/${id}/cancel`),
+    api.delete(`/tickets/cancel/${id}`),
 };
 
 

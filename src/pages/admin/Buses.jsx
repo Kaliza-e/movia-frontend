@@ -32,11 +32,15 @@ const Buses = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...formData,
+        capacity: Number(formData.capacity),
+      };
       if (editingBus) {
-        await busesAPI.update(editingBus.id, formData);
+        await busesAPI.update(editingBus.id, payload);
         toast.success('Bus updated');
       } else {
-        await busesAPI.create(formData);
+        await busesAPI.create(payload);
         toast.success('Bus created');
       }
       setShowModal(false);

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import MoviaBrand from './MoviaBrand';
 import {
   LayoutDashboard,
   Bus,
@@ -15,9 +16,7 @@ import {
   Smartphone,
   Route as RouteIcon,
   ChevronRight,
-  Search,
   Plus,
-  ChevronDown,
 } from 'lucide-react';
 
 export const Layout = ({ children, title, action }) => {
@@ -107,18 +106,10 @@ export const Layout = ({ children, title, action }) => {
         style={{ boxShadow: '2px 0 16px rgba(108,99,255,0.06)' }}
       >
         {/* Brand */}
-        <div className="flex items-center justify-between px-6 py-6 border-b border-[#E5E7EB]">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#6C63FF' }}>
-              <Bus className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <span className="text-[#1A1A2E] text-lg font-bold tracking-tight">Movia</span>
-              <p className="text-[10px] text-[#6B7280] font-medium tracking-wider uppercase leading-none mt-0.5">Smart Transport</p>
-            </div>
-          </div>
+        <div className="flex items-center justify-center px-6 py-6 border-b border-[#E5E7EB] relative">
+          <MoviaBrand size="md" />
           <button
-            className="lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#EEF0FF] transition-colors"
+            className="absolute right-4 lg:hidden w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#EEF0FF] transition-colors"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="w-4 h-4" />
@@ -199,6 +190,7 @@ export const Layout = ({ children, title, action }) => {
 
             {/* Page title */}
             <div className="flex items-center gap-2">
+              <MoviaBrand size="sm" className="lg:hidden" />
               <h1 className="text-lg font-bold text-[#1A1A2E] hidden lg:block">{pageTitle}</h1>
             </div>
 

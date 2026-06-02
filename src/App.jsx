@@ -4,6 +4,7 @@ import  Register  from './pages/Register';
 import  LiveTracking from './pages/LiveTracking';
 import PassengerDashboard from './pages/passenger/Dashboard';
 import DriverDashboard from './pages/driver/Dashboard';
+import DriverSchedules from './pages/driver/Schedules';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoutes from './pages/admin/Routes';
 import AdminBuses from './pages/admin/Buses';
@@ -49,6 +50,7 @@ function App() {
 
       {/* DRIVER ONLY */}
       <Route path="/driver" element={<DriverDashboard />} />
+      <Route path="/driver/schedule" element={<DriverSchedules />} />
      
 
       {/* ADMIN ONLY */}
