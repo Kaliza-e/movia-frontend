@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Lock, Mail, Loader2, Eye, EyeOff, Bus, Zap, CheckCircle } from 'lucide-react';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -18,14 +18,18 @@ const Login = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await login({ email, password });
+      const response = await login({
+        email: emailOrUsername,
+        username: emailOrUsername,
+        password,
+      });
       const loggedUser = response?.user || response;
       const role = loggedUser?.role || 'PASSENGER';
       if (role === 'ADMIN') navigate('/admin');
       else if (role === 'DRIVER') navigate('/driver');
       else navigate('/dashboard');
     } catch (err) {
-      setError(err?.response?.data?.message || 'Invalid email or password.');
+      setError(err?.response?.data?.message || 'Invalid email/username or password.');
     } finally {
       setLoading(false);
     }
@@ -158,18 +162,18 @@ const Login = () => {
           {/* Form — no card, form sits directly on the dark bg like the reference */}
           <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* Email */}
+            {/* Email or Username */}
             <div>
               <label className="block text-xs font-semibold mb-1.5" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                Email
+                Email or Username
               </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'rgba(255,255,255,0.45)' }} />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  type="text"
+                  value={emailOrUsername}
+                  onChange={(e) => setEmailOrUsername(e.target.value)}
+                  placeholder="Enter your email or username"
                   required
                   className="w-full pl-11 pr-4 py-3 rounded-xl text-sm outline-none transition-all"
                   style={{

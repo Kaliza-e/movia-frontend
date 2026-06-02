@@ -15,10 +15,10 @@ export const AuthProvider = ({ children }) => {
     if (!data) return null;
     // Try all common field names the backend might use
     return (
+      data.username ||
       data.first_name ||
       data.firstName ||
       data.name?.split(' ')[0] ||
-      data.username ||
       data.email?.split('@')[0] ||
       null
     );

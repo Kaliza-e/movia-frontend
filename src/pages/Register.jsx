@@ -10,6 +10,7 @@ const Register = () => {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +24,7 @@ const Register = () => {
     setLoading(true);
     setError('');
     try {
-      await register({ first_name: firstName, last_name: lastName, phone_number: phoneNumber, email, password, role });
+      await register({ firstName, lastName, username, phoneNumber, email, password, role });
       toast.success('Account created! Welcome to Movia.');
       navigate('/login');
     } catch (err) {
@@ -210,6 +211,25 @@ const Register = () => {
                   onChange={(e) => setLastName(e.target.value)}
                   required
                   className={`${inputCls} px-4`}
+                  style={inputStyle}
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                />
+              </div>
+            </div>
+
+            {/* Username */}
+            <div>
+              <label className="block text-xs font-semibold mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>Username</label>
+              <div className="relative">
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'rgba(255,255,255,0.45)' }} />
+                <input
+                  type="text"
+                  placeholder="jean_mutoni"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  className={`${inputCls} pl-10 pr-4`}
                   style={inputStyle}
                   onFocus={onFocus}
                   onBlur={onBlur}

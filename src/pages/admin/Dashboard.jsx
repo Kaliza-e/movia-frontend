@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   const [recentUsers, setRecentUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const displayName = user?.first_name || user?.name?.split(' ')[0] || 'Admin';
+  const displayName = user?.username || user?.first_name || user?.name?.split(' ')[0] || 'Admin';
 
   useEffect(() => {
     const fetchData = async () => {

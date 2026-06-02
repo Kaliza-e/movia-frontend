@@ -37,7 +37,7 @@ const DriverDashboard = () => {
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const displayName = user?.first_name || user?.name?.split(' ')[0] || 'Driver';
+  const displayName = user?.username || user?.first_name || user?.name?.split(' ')[0] || 'Driver';
 
   useEffect(() => {
     const fetchSchedules = async () => {

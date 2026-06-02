@@ -59,7 +59,7 @@ const PassengerDashboard = () => {
   const [stats, setStats] = useState({ total: 0, upcoming: 0, completed: 0 });
   const [loading, setLoading] = useState(true);
 
-  const displayName = user?.first_name || user?.name?.split(' ')[0] || 'there';
+  const displayName = user?.username || user?.first_name || user?.name?.split(' ')[0] || 'there';
 
   useEffect(() => { loadData(); }, [user]);
 

@@ -83,9 +83,9 @@ export const Layout = ({ children, title, action }) => {
 
   const userDisplayName = user?.first_name
     ? `${user.first_name} ${user.last_name || ''}`.trim()
-    : user?.name || user?.email?.split('@')[0] || 'User';
+    : user?.username || user?.name || user?.email?.split('@')[0] || 'User';
 
-  const userInitials = (user?.first_name?.charAt(0) || user?.email?.charAt(0) || 'U').toUpperCase();
+  const userInitials = (user?.username?.charAt(0) || user?.first_name?.charAt(0) || user?.email?.charAt(0) || 'U').toUpperCase();
 
   const roleLabel = isAdmin ? 'Administrator' : isDriver ? 'Driver' : 'Passenger';
 
@@ -222,9 +222,25 @@ export const Layout = ({ children, title, action }) => {
                 <span className="absolute top-2 right-2 w-2 h-2 rounded-full" style={{ background: '#6C63FF' }} />
               </button>
 
-              {/* Avatar */}
+              {/* User Profile */}
+              <div className="hidden sm:flex items-center gap-3 ml-4 pl-4 border-l border-[#E5E7EB]">
+                <div className="text-right">
+                  <p className="text-sm font-semibold text-[#1A1A2E]">
+                    {user?.username || userDisplayName}
+                  </p>
+                  <p className="text-xs text-[#6B7280]">{roleLabel}</p>
+                </div>
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold"
+                  style={{ background: '#6C63FF' }}
+                >
+                  {userInitials}
+                </div>
+              </div>
+
+              {/* Avatar (mobile) */}
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold cursor-pointer ml-1"
+                className="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold cursor-pointer ml-1 sm:hidden"
                 style={{ background: '#6C63FF' }}
               >
                 {userInitials}
