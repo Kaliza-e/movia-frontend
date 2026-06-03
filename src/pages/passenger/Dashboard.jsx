@@ -8,8 +8,9 @@ import {
   Ticket, MapPin, Clock, ArrowRight,
   Bus, Calendar, Smartphone,
   CheckCircle, AlertCircle, Plus,
-  Navigation, Activity, TrendingUp,
+  Navigation, Activity, TrendingUp, RefreshCw,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const StatCard = ({ icon: Icon, label, value, sub, iconBg, trend }) => (
   <div
@@ -59,6 +60,7 @@ const PassengerDashboard = () => {
   const [recentTickets, setRecentTickets] = useState([]);
   const [stats, setStats] = useState({ total: 0, upcoming: 0, completed: 0 });
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const passengerId = getUserId(user);
   const displayName = getDisplayName(user);
@@ -88,6 +90,33 @@ const PassengerDashboard = () => {
       setStats({ total: 0, upcoming: 0, completed: 0 });
     } finally {
       setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      if (passengerId) {
+        const [ticketsRes, statsRes] = await Promise.all([
+          ticketsAPI.getPassengerTickets(passengerId),
+          statsAPI.getPassengerStats(passengerId),
+        ]);
+        const tickets = ticketsRes.data || [];
+        setRecentTickets(tickets.slice(0, 4));
+        if (statsRes.data) {
+          setStats({
+            total: statsRes.data.total || tickets.length,
+            upcoming: statsRes.data.upcoming || tickets.filter(t => new Date(t.travelDate) > new Date()).length,
+            completed: statsRes.data.completed || tickets.filter(t => t.status === 'COMPLETED').length,
+          });
+        }
+        toast.success('Data refreshed successfully');
+      }
+    } catch {
+      toast.error('Failed to refresh data');
+    } finally {
+      setRefreshing(false);
     }
   };
 
@@ -127,8 +156,18 @@ const PassengerDashboard = () => {
                 </button>
               </div>
             </div>
-            <div className="hidden lg:flex w-20 h-20 rounded-2xl bg-white/20 items-center justify-center">
-              <Bus className="w-10 h-10 text-white" />
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="inline-flex items-center gap-2 bg-white/20 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-white/30 transition-all disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+              <div className="hidden lg:flex w-20 h-20 rounded-2xl bg-white/20 items-center justify-center">
+                <Bus className="w-10 h-10 text-white" />
+              </div>
             </div>
           </div>
         </div>

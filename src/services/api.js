@@ -172,6 +172,9 @@ export const schedulesAPI = {
   getByRoute: (routeId) =>
     api.get(`/schedules/route/${routeId}`),
 
+  getBookedSeats: (scheduleId) =>
+    api.get(`/schedules/${scheduleId}/booked-seats`),
+
   create: (data) =>
     api.post('/schedules', data),
 

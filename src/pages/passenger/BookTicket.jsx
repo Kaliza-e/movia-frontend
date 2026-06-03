@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { routesAPI, schedulesAPI, ticketsAPI, searchAPI } from '../../services/api';
@@ -41,6 +41,23 @@ const BookTicket = () => {
   const [loading, setLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookedTicket, setBookedTicket] = useState(null);
+  const [takenSeats, setTakenSeats] = useState([]);
+
+  useEffect(() => {
+    const loadInitialRoutes = async () => {
+      try {
+        const response = await routesAPI.getAll();
+        const data = response.data || [];
+        setRoutes(data);
+        if (data.length > 0) {
+          setStep(2);
+        }
+      } catch {
+        toast.error('Unable to load routes.');
+      }
+    };
+    loadInitialRoutes();
+  }, []);
 
   const searchRoutes = async () => {
     if (!from || !to) { toast.error('Please enter both origin and destination'); return; }
@@ -86,6 +103,15 @@ const BookTicket = () => {
     } finally { setLoading(false); }
   };
 
+  const loadBookedSeats = async (schedule) => {
+    try {
+      const response = await schedulesAPI.getBookedSeats(schedule.id);
+      setTakenSeats(response.data || []);
+    } catch {
+      setTakenSeats([]);
+    }
+  };
+
   const bookTicket = async () => {
     if (!selectedSeat) { toast.error('Please select a seat'); return; }
     if (!passengerId) { toast.error('Please log in again before booking.'); return; }
@@ -111,7 +137,6 @@ const BookTicket = () => {
     return seats;
   };
 
-  const takenSeats = [];
 
   // ── Success screen ──────────────────────────────────────────────────────────
   if (bookingSuccess && bookedTicket) {
@@ -284,7 +309,11 @@ const BookTicket = () => {
               {schedules.map((schedule) => (
                 <div
                   key={schedule.id}
-                  onClick={() => { setSelectedSchedule(schedule); setStep(4); }}
+                  onClick={async () => {
+                    setSelectedSchedule(schedule);
+                    await loadBookedSeats(schedule);
+                    setStep(4);
+                  }}
                   className="bg-white rounded-[16px] p-5 cursor-pointer hover:-translate-y-0.5 transition-all duration-200"
                   style={{ boxShadow: '0 2px 16px rgba(108,99,255,0.07)' }}
                 >

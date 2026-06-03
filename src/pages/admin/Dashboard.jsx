@@ -6,8 +6,9 @@ import { Layout } from '../../components/Layout';
 import {
   Users, Bus, Route as RouteIcon, Ticket,
   TrendingUp, ArrowRight, Plus, Activity,
-  Calendar, CheckCircle, ShieldCheck,
+  Calendar, CheckCircle, ShieldCheck, RefreshCw,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const StatCard = ({ icon: Icon, label, value, sub, iconBg, trend }) => (
   <div
@@ -54,6 +55,7 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState({ users: 0, buses: 0, routes: 0, bookings: 0, revenue: 0, drivers: 0 });
   const [recentUsers, setRecentUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const displayName = user?.username || user?.first_name || user?.name?.split(' ')[0] || 'Admin';
 
@@ -93,10 +95,50 @@ const AdminDashboard = () => {
         // silently fail — stats stay at 0
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
     };
     fetchData();
   }, []);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const [statsRes, usersRes] = await Promise.allSettled([
+        statsAPI.getAdminStats(),
+        adminAPI.getUsers(),
+      ]);
+
+      if (statsRes.status === 'fulfilled' && statsRes.value.data) {
+        const s = statsRes.value.data;
+        setStats({
+          users: s.totalUsers || s.users || 0,
+          buses: s.totalBuses || s.buses || 0,
+          routes: s.totalRoutes || s.routes || 0,
+          bookings: s.totalBookings || s.bookings || 0,
+          revenue: s.totalRevenue || s.revenue || 0,
+          drivers: s.totalDrivers || s.drivers || 0,
+        });
+      }
+
+      if (usersRes.status === 'fulfilled') {
+        const users = usersRes.value.data || [];
+        setRecentUsers(users.slice(0, 5));
+        if (statsRes.status !== 'fulfilled' || !statsRes.value.data?.totalUsers) {
+          setStats(prev => ({
+            ...prev,
+            users: users.length,
+            drivers: users.filter(u => u.role === 'DRIVER').length,
+          }));
+        }
+      }
+      toast.success('Data refreshed successfully');
+    } catch {
+      toast.error('Failed to refresh data');
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <Layout>
@@ -113,9 +155,21 @@ const AdminDashboard = () => {
             <ShieldCheck className="w-6 h-6 text-white" />
           </div>
           <div className="relative">
-            <p className="text-white/70 text-xs font-semibold tracking-widest uppercase mb-2">System Administrator</p>
-            <h1 className="text-3xl font-bold text-white mb-1">Welcome, {displayName}!</h1>
-            <p className="text-white/70 text-sm mb-6">Manage routes, buses, drivers and monitor operations.</p>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-white/70 text-xs font-semibold tracking-widest uppercase mb-2">System Administrator</p>
+                <h1 className="text-3xl font-bold text-white mb-1">Welcome, {displayName}!</h1>
+                <p className="text-white/70 text-sm">Manage routes, buses, drivers and monitor operations.</p>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="inline-flex items-center gap-2 bg-white/20 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-white/30 transition-all disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
             <div className="flex gap-3 flex-wrap">
               <button
                 onClick={() => navigate('/admin/buses')}

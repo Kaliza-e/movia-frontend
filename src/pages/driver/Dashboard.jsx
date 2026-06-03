@@ -7,8 +7,9 @@ import { getDisplayName, getUserId } from '../../utils/data';
 import {
   Bus, Navigation, MapPin, Clock, Calendar,
   CheckCircle, TrendingUp, Activity, Car,
-  Gauge, ArrowRight, Star,
+  Gauge, ArrowRight, Star, RefreshCw,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const StatCard = ({ icon: Icon, label, value, sub, iconBg, trend }) => (
   <div
@@ -37,6 +38,7 @@ const DriverDashboard = () => {
 
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
 
   const driverId = getUserId(user);
   const displayName = getDisplayName(user, 'Driver');
@@ -52,12 +54,28 @@ const DriverDashboard = () => {
         setSchedules([]);
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
     };
     fetchSchedules();
   }, [driverId]);
 
-  const todaySchedules = schedules.filter(s => {
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      if (driverId) {
+        const res = await driversAPI.getMySchedules(driverId);
+        setSchedules(res.data || []);
+        toast.success('Data refreshed successfully');
+      }
+    } catch {
+      toast.error('Failed to refresh data');
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+    const todaySchedules = schedules.filter(s => {
     const today = new Date().toDateString();
     const departureTime = s.departureTime || s.departure_time;
     return departureTime ? new Date(departureTime).toDateString() === today : false;
@@ -68,8 +86,6 @@ const DriverDashboard = () => {
   return (
     <Layout>
       <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
-
-        {/* ── Welcome banner ── */}
         <div
           className="rounded-[16px] p-8 text-white relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #6C63FF 0%, #4F8EF7 100%)' }}
@@ -80,13 +96,25 @@ const DriverDashboard = () => {
             <Car className="w-6 h-6 text-white" />
           </div>
           <div className="relative">
-            <p className="text-white/70 text-xs font-semibold tracking-widest uppercase mb-2">Driver Portal</p>
-            <h1 className="text-3xl font-bold text-white mb-1">Good day, {displayName}!</h1>
-            <p className="text-white/70 text-sm mb-6">
-              {todaySchedules.length > 0
-                ? `You have ${todaySchedules.length} trip${todaySchedules.length > 1 ? 's' : ''} scheduled today.`
-                : 'No trips scheduled for today. Check your upcoming schedule.'}
-            </p>
+            <div className="flex items-start justify-between mb-4">
+              <div>
+                <p className="text-white/70 text-xs font-semibold tracking-widest uppercase mb-2">Driver Portal</p>
+                <h1 className="text-3xl font-bold text-white mb-1">Good day, {displayName}!</h1>
+                <p className="text-white/70 text-sm">
+                  {todaySchedules.length > 0
+                    ? `You have ${todaySchedules.length} trip${todaySchedules.length > 1 ? 's' : ''} scheduled today.`
+                    : 'No trips scheduled for today. Check your upcoming schedule.'}
+                </p>
+              </div>
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="inline-flex items-center gap-2 bg-white/20 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-white/30 transition-all disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
             <div className="flex gap-3 flex-wrap">
               <button
                 onClick={() => navigate('/liveTracking')}
