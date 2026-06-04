@@ -80,7 +80,7 @@ const USSDSimulator = () => {
 
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-[#1A1A2E]">USSD Booking</h1>
+          {/* <h1 className="text-2xl font-bold text-[#1A1A2E]">USSD Booking</h1> */}
           <p className="text-sm text-[#6B7280] mt-0.5">Simulate the feature phone booking interface</p>
         </div>
 

@@ -161,14 +161,14 @@ const AdminDashboard = () => {
                 <h1 className="text-3xl font-bold text-white mb-1">Welcome, {displayName}!</h1>
                 <p className="text-white/70 text-sm">Manage routes, buses, drivers and monitor operations.</p>
               </div>
-              <button
+              {/* <button 
                 onClick={handleRefresh}
                 disabled={refreshing}
                 className="inline-flex items-center gap-2 bg-white/20 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-white/30 transition-all disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                 Refresh
-              </button>
+              </button>*/}
             </div>
             <div className="flex gap-3 flex-wrap">
               <button

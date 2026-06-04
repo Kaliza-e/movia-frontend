@@ -3,11 +3,12 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Lock, Mail, Phone, User, Loader2, Eye, EyeOff, Zap, Car, Users, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import { driversAPI } from '../services/api';
 import MoviaBrand from '../components/MoviaBrand';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, login } = useAuth();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -25,9 +26,32 @@ const Register = () => {
     setLoading(true);
     setError('');
     try {
-      await register({ firstName, lastName, username, phoneNumber, email, password, role });
-      toast.success('Account created! Welcome to Movia.');
-      navigate('/login');
+      const res = await register({ firstName, lastName, username, phoneNumber, email, password, role });
+      const createdUserId = res?.data?.user?.id || res?.data?.id;
+
+      if (role === 'DRIVER') {
+        try {
+          const userData = await login({ email, password });
+          const actualUserId = userData?.id || createdUserId;
+          await driversAPI.create({
+            firstName,
+            lastName,
+            phoneNumber,
+            licenseNumber: 'PENDING',
+            userId: actualUserId,
+            user_id: actualUserId
+          });
+          toast.success('Driver account created! Welcome to Movia.');
+          navigate('/driver');
+        } catch (driverErr) {
+          console.warn('Driver profile creation failed:', driverErr);
+          toast.success('Account created! Welcome to Movia.');
+          navigate('/login');
+        }
+      } else {
+        toast.success('Account created! Welcome to Movia.');
+        navigate('/login');
+      }
     } catch (err) {
       setError(err?.response?.data?.message || 'Registration failed. Please try again.');
     } finally {

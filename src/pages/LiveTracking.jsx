@@ -113,7 +113,7 @@ export default function LiveTracking() {
         {/* Page header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-text">Live Map</h1>
+            {/* <h1 className="text-2xl font-bold text-text">Live Map</h1> */}
             <p className="text-sm text-text-muted mt-0.5">
               Real-time bus locations · Last updated {lastRefresh.toLocaleTimeString()}
             </p>

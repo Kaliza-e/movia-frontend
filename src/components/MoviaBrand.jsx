@@ -1,7 +1,7 @@
 import MoviaLogo from '../assets/MoviaLogo.png';
 
 const sizes = {
-  sm: 'w-16 h-16',
+  sm: 'w-20 h-20',
   md: 'w-24 h-24',
   lg: 'w-36 h-36',
 };

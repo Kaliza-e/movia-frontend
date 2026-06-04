@@ -9,6 +9,7 @@ import AdminDashboard from './pages/admin/Dashboard';
 import AdminRoutes from './pages/admin/Routes';
 import AdminBuses from './pages/admin/Buses';
 import AdminSchedules from './pages/admin/Schedules';
+import AdminDrivers from './pages/admin/Drivers';
 import BookTicket from './pages/passenger/BookTicket';
 import MyTickets from './pages/passenger/MyTickets';
 import USSDSimulator from './pages/passenger/USSDSimulator';
@@ -58,6 +59,7 @@ function App() {
       <Route path="/admin/routes" element={<AdminRoutes />} />
       <Route path="/admin/buses" element={<AdminBuses />} />
       <Route path="/admin/schedules" element={<AdminSchedules />} />
+      <Route path="/admin/drivers" element={<AdminDrivers/>} />
 
       {/* DEFAULT */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

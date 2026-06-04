@@ -83,7 +83,7 @@ const Routes = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#1A1A2E]">Routes</h1>
+            {/* <h1 className="text-2xl font-bold text-[#1A1A2E]">Routes</h1> */}
             <p className="text-sm text-[#6B7280] mt-0.5">Manage all transport routes</p>
           </div>
           <button

@@ -9,11 +9,8 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
-
-  // Helper: extract a display name from whatever shape the backend returns
   const extractName = (data) => {
     if (!data) return null;
-    // Try all common field names the backend might use
     return (
       data.username ||
       data.first_name ||
@@ -24,9 +21,6 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // =========================
-  // LOAD TOKEN & USER
-  // =========================
 
   useEffect(() => {
     const savedToken = localStorage.getItem('token');

@@ -5,6 +5,7 @@ import {
   busesAPI,
   routesAPI,
   driversAPI,
+  adminAPI,
 } from "../../services/api";
 import {
   Calendar,
@@ -43,16 +44,34 @@ const Schedules = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [schedulesRes, busesRes, routesRes, driversRes] = await Promise.all([
+      const [schedulesRes, busesRes, routesRes, driversRes, usersRes] = await Promise.all([
         schedulesAPI.getAll(),
         busesAPI.getAll(),
         routesAPI.getAll(),
         driversAPI.getAll(),
+        adminAPI.getUsers().catch(() => ({ data: [] }))
       ]);
       setSchedules(schedulesRes.data || []);
       setBuses(busesRes.data || []);
       setRoutes(routesRes.data || []);
-      setDrivers(driversRes.data || []);
+
+      const adminDrivers = driversRes.data || [];
+      const selfDrivers = (usersRes.data || [])
+        .filter(u => u.role === 'DRIVER')
+        .map(u => ({
+          id: u.id,
+          firstName: u.firstName || u.name?.split(' ')[0] || u.username,
+          lastName: u.lastName || u.name?.split(' ').slice(1).join(' ') || '(Self-Registered)'
+        }));
+
+      // Combine drivers and filter out any potential duplicates by id if backend shares ids
+      const allDriversMap = new Map();
+      [...adminDrivers, ...selfDrivers].forEach(d => {
+        if (!allDriversMap.has(d.id)) {
+          allDriversMap.set(d.id, d);
+        }
+      });
+      setDrivers(Array.from(allDriversMap.values()));
     } catch {
       toast.error("Failed to load data");
     } finally {
@@ -74,8 +93,15 @@ const Schedules = () => {
         await schedulesAPI.update(editingSchedule.id, payload);
         toast.success("Schedule updated");
       } else {
-        await schedulesAPI.create(payload);
-        toast.success("Schedule created");
+        try {
+          await adminAPI.createSchedule(payload);
+          toast.success("Schedule created");
+        } catch (createErr) {
+          // Fallback to generic if admin endpoint fails
+          console.warn('Admin create failed, trying generic...', createErr);
+          await schedulesAPI.create(payload);
+          toast.success("Schedule created");
+        }
       }
       setShowModal(false);
       setEditingSchedule(null);
@@ -141,10 +167,10 @@ const Schedules = () => {
   return (
     <Layout>
       <div className="space-y-6 max-w-7xl mx-auto">
-       
+
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#1A1A2E]">Schedules</h1>
+            {/* <h1 className="text-2xl font-bold text-[#1A1A2E]">Schedules</h1> */}
             <p className="text-sm text-[#6B7280] mt-0.5">
               Plan and assign trips
             </p>

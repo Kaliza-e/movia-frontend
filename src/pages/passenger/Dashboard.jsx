@@ -157,14 +157,14 @@ const PassengerDashboard = () => {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <button
+              {/* <button 
                 onClick={handleRefresh}
                 disabled={refreshing}
                 className="inline-flex items-center gap-2 bg-white/20 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-white/30 transition-all disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                 Refresh
-              </button>
+              </button>*/}
               <div className="hidden lg:flex w-20 h-20 rounded-2xl bg-white/20 items-center justify-center">
                 <Bus className="w-10 h-10 text-white" />
               </div>

@@ -75,13 +75,13 @@ const DriverDashboard = () => {
     }
   };
 
-    const todaySchedules = schedules.filter(s => {
+  const todaySchedules = schedules.filter(s => {
     const today = new Date().toDateString();
     const departureTime = s.departureTime || s.departure_time;
     return departureTime ? new Date(departureTime).toDateString() === today : false;
   });
 
-  const upcomingSchedules = schedules.slice(0, 4);
+  const displaySchedules = todaySchedules.slice(0, 4);
 
   return (
     <Layout>
@@ -106,14 +106,14 @@ const DriverDashboard = () => {
                     : 'No trips scheduled for today. Check your upcoming schedule.'}
                 </p>
               </div>
-              <button
+              {/* ?<button 
                 onClick={handleRefresh}
                 disabled={refreshing}
                 className="inline-flex items-center gap-2 bg-white/20 text-white font-semibold text-sm px-4 py-2 rounded-xl hover:bg-white/30 transition-all disabled:opacity-50"
               >
                 <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
                 Refresh
-              </button>
+              </button>*/}
             </div>
             <div className="flex gap-3 flex-wrap">
               <button
@@ -184,10 +184,10 @@ const DriverDashboard = () => {
               </div>
             </div>
 
-            {/* Upcoming trips */}
+            {/* Today's trips */}
             <div>
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-bold text-[#1A1A2E]">Upcoming Trips</h2>
+                <h2 className="text-base font-bold text-[#1A1A2E]">Today's Trips</h2>
               </div>
 
               <div className="bg-white rounded-[16px] overflow-hidden" style={{ boxShadow: '0 2px 16px rgba(108,99,255,0.07)' }}>
@@ -196,16 +196,16 @@ const DriverDashboard = () => {
                     <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: '#6C63FF', borderTopColor: 'transparent' }} />
                     <p className="text-[#6B7280] text-sm">Loading schedule...</p>
                   </div>
-                ) : upcomingSchedules.length === 0 ? (
+                ) : displaySchedules.length === 0 ? (
                   <div className="p-12 text-center">
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4" style={{ background: '#EEF0FF' }}>
                       <Calendar className="w-8 h-8" style={{ color: '#6C63FF' }} />
                     </div>
-                    <p className="font-semibold text-[#1A1A2E] mb-1">No upcoming trips</p>
-                    <p className="text-sm text-[#6B7280]">Your schedule will appear here when assigned by admin</p>
+                    <p className="font-semibold text-[#1A1A2E] mb-1">No trips for today</p>
+                    <p className="text-sm text-[#6B7280]">You have no scheduled trips for today</p>
                   </div>
                 ) : (
-                  upcomingSchedules.map((schedule, idx) => (
+                  displaySchedules.map((schedule, idx) => (
                     <div
                       key={schedule.id || idx}
                       className="flex items-center gap-4 px-5 py-4 border-b border-[#E5E7EB] last:border-0 hover:bg-[#F9FAFB] transition-colors"

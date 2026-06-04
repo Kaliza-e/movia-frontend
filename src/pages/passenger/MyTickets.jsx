@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { ticketsAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
 import { Ticket, Calendar, Bus, QrCode, Download, Clock, Users, ArrowRight, Plus, CheckCircle, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
+import { getUserId } from '../../utils/data';
 import { toast } from 'sonner';
 
 const statusConfig = {
@@ -93,18 +94,40 @@ const TicketCard = ({ ticket, onNavigate }) => {
 const MyTickets = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('upcoming');
 
-  useEffect(() => { loadTickets(); }, [user]);
+  useEffect(() => {
+    // Load tickets initially and also when a refresh flag is passed via navigation state
+    if (location.state?.refresh) {
+      // Reset the flag so that subsequent navigations don't keep reloading unintentionally
+      navigate(location.pathname, { replace: true });
+    }
+    loadTickets();
+  }, [user, location.state?.refresh]);
 
   const loadTickets = async () => {
     try {
       setLoading(true);
-      if (user?.id) {
-        const response = await ticketsAPI.getUserTickets(user.id);
-        setTickets(response.data || []);
+      const passengerId = getUserId(user);
+      if (passengerId) {
+        let data = [];
+        try {
+          const response = await ticketsAPI.getPassengerTickets(passengerId);
+          data = response.data || [];
+        } catch {
+          // Fallback to user tickets
+        }
+
+        if (data.length === 0) {
+          try {
+            const fallbackResponse = await ticketsAPI.getUserTickets(passengerId);
+            data = fallbackResponse.data || [];
+          } catch { }
+        }
+        setTickets(data);
       }
     } catch {
       toast.error('Failed to load tickets');
@@ -114,8 +137,15 @@ const MyTickets = () => {
     }
   };
 
-  const upcomingTickets = tickets.filter(t => new Date(t.travelDate) > new Date() && t.status !== 'CANCELLED');
-  const pastTickets = tickets.filter(t => new Date(t.travelDate) <= new Date() || t.status === 'COMPLETED');
+  const upcomingTickets = tickets.filter(t => {
+    const dDate = new Date(t.travelDate || t.schedule?.departureTime || t.departureTime || t.schedule?.departure_time || new Date().toISOString());
+    return dDate > new Date() && t.status !== 'CANCELLED';
+  });
+
+  const pastTickets = tickets.filter(t => {
+    const dDate = new Date(t.travelDate || t.schedule?.departureTime || t.departureTime || t.schedule?.departure_time || new Date().toISOString());
+    return dDate <= new Date() || t.status === 'COMPLETED';
+  });
 
   const displayed = activeTab === 'upcoming' ? upcomingTickets : pastTickets;
 
@@ -126,7 +156,7 @@ const MyTickets = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#1A1A2E]">My Tickets</h1>
+            {/* <h1 className="text-2xl font-bold text-[#1A1A2E]">My Tickets</h1> */}
             <p className="text-sm text-[#6B7280] mt-0.5">View and manage your bookings</p>
           </div>
           <button

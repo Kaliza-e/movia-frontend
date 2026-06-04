@@ -35,7 +35,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const url = error.config?.url || '';
+    // Prevent aggressive redirects on specific data endpoints where the backend might mask 500s/404s as 401s
+    if (error.response?.status === 401 && !url.includes('/schedules') && !url.includes('/tickets') && !url.includes('/admin/schedules')) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -160,7 +162,6 @@ export const busesAPI = {
     api.delete(`/buses/${id}`),
 };
 
-
 // =========================
 // SCHEDULES API
 // =========================
@@ -238,6 +239,16 @@ export const driversAPI = {
 
   getById: (id) =>
     api.get(`/drivers/${id}`),
+
+  create: (data) =>
+    api.post('/drivers', data),
+
+  update: (id, data) =>
+    api.put(`/drivers/${id}`, data),
+
+  delete: (id) =>
+    api.delete(`/drivers/${id}`),
+
 
   getMySchedules: (driverId) =>
     api.get(`/schedules/driver/${driverId}`),

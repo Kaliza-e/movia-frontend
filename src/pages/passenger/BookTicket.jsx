@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { routesAPI, schedulesAPI, ticketsAPI, searchAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
@@ -43,6 +43,7 @@ const BookTicket = () => {
   const [bookedTicket, setBookedTicket] = useState(null);
   const [takenSeats, setTakenSeats] = useState([]);
 
+  const location = useLocation();
   useEffect(() => {
     const loadInitialRoutes = async () => {
       try {
@@ -106,7 +107,14 @@ const BookTicket = () => {
   const loadBookedSeats = async (schedule) => {
     try {
       const response = await schedulesAPI.getBookedSeats(schedule.id);
-      setTakenSeats(response.data || []);
+      const data = response.data || [];
+      const seats = data.map(s => {
+        if (typeof s === 'object' && s !== null) {
+          return Number(s.seatNumber || s.seat_number || s.seat);
+        }
+        return Number(s);
+      }).filter(n => !isNaN(n));
+      setTakenSeats(seats);
     } catch {
       setTakenSeats([]);
     }
@@ -115,6 +123,7 @@ const BookTicket = () => {
   const bookTicket = async () => {
     if (!selectedSeat) { toast.error('Please select a seat'); return; }
     if (!passengerId) { toast.error('Please log in again before booking.'); return; }
+    if (takenSeats.includes(Number(selectedSeat))) { toast.error('Seat already taken. Choose another.'); return; }
     setLoading(true);
     try {
       const response = await ticketsAPI.book({
@@ -172,7 +181,7 @@ const BookTicket = () => {
 
             <div className="flex gap-3">
               <button
-                onClick={() => navigate('/myTickets')}
+                onClick={() => navigate('/myTickets', { state: { refresh: true } })}
                 className="flex-1 py-3 rounded-xl text-white font-semibold text-sm hover:opacity-90 transition-opacity"
                 style={{ background: '#6C63FF' }}
               >
@@ -197,7 +206,7 @@ const BookTicket = () => {
 
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-[#1A1A2E]">Book a Trip</h1>
+          {/* <h1 className="text-2xl font-bold text-[#1A1A2E]">Book a Trip</h1> */}
           <p className="text-sm text-[#6B7280] mt-0.5">Find and reserve your seat in seconds</p>
         </div>
 
@@ -262,7 +271,7 @@ const BookTicket = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-lg font-bold text-[#1A1A2E]">Available Routes</h2>
-                <p className="text-sm text-[#6B7280]">{from} → {to}</p>
+                {/* <p className="text-sm text-[#6B7280]">{from} → {to}</p> */}
               </div>
               <button onClick={() => setStep(1)} className="text-sm font-semibold px-4 py-2 rounded-xl border border-[#E5E7EB] text-[#6B7280] hover:bg-[#F9FAFB] transition-colors">Back</button>
             </div>
@@ -283,7 +292,7 @@ const BookTicket = () => {
                     </span>
                   </div>
                   <h4 className="font-bold text-[#1A1A2E] mb-3 text-sm">
-                    {route.name || `${route.origin || from} → ${route.destination || to}`}
+                    {route.name || `${route.departureLocation || from} → ${route.destinationLocation || to}`}
                   </h4>
                   <div className="space-y-1.5 text-xs text-[#6B7280]">
                     <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" />{route.distanceKm || route.distance || '90'} km</div>
@@ -321,18 +330,17 @@ const BookTicket = () => {
                     <div className="space-y-2">
                       <div className="flex items-center gap-3 font-bold text-[#1A1A2E]">
                         <Clock className="w-4 h-4" style={{ color: '#6C63FF' }} />
-                        <span>{schedule.departureTime || schedule.departure_time?.split(' ')[1] || '08:00 AM'}</span>
+                        <span>{schedule.departureTime || '08:00 AM'}</span>
                         <ArrowRight className="w-4 h-4 text-[#6B7280]" />
-                        <span>{schedule.arrivalTime || schedule.arrival_time?.split(' ')[1] || '10:00 AM'}</span>
+                        <span>{schedule.arrivalTime || '10:00 AM'}</span>
                       </div>
                       <div className="flex gap-5 text-xs text-[#6B7280]">
-                        <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5" />{schedule.date || schedule.departure_time?.split(' ')[0] || 'Today'}</span>
-                        <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.busNumber || schedule.plate_number || 'RAB 123A'}</span>
+                        <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.bus.plateNumber || 'RAB 123A'}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: '#DCFCE7', color: '#16A34A' }}>
-                        {schedule.availableSeats || 15} seats left
+                        {schedule.bus.capacity || 15} seats left
                       </span>
                       <button className="text-xs font-semibold px-4 py-2 rounded-xl text-white" style={{ background: '#6C63FF' }}>
                         Select
