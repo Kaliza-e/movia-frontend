@@ -338,7 +338,7 @@ const BookTicket = () => {
                         <span>{schedule.arrivalTime || '10:00 AM'}</span>
                       </div>
                       <div className="flex gap-5 text-xs text-[#6B7280]">
-                        <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.bus.plateNumber || 'RAB 123A'}</span>
+                        <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.bus?.plateNumber || schedule.bus?.plate_number || 'RAB 123A'}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">

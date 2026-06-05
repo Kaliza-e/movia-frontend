@@ -17,7 +17,7 @@ const ScheduleCard = ({ schedule }) => {
         <div>
           <p className="font-semibold text-[#1A1A2E]">{route?.name || `${route?.origin || 'Origin'} → ${route?.destination || 'Destination'}`}</p>
           <p className="text-sm text-gray-500 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5" /> {bus?.plateNumber || 'Bus'}
+            <MapPin className="w-3.5 h-3.5" /> {getScheduleBus(schedule)?.plateNumber || getScheduleBus(schedule)?.plate_number || 'Bus'}
           </p>
         </div>
       </div>
@@ -40,7 +40,9 @@ const MyTrips = () => {
       try {
         if (!driverId) return;
         const res = await driversAPI.getMySchedules(driverId);
-        setSchedules(res.data || []);
+        console.log('Driver schedules response', res);
+        const data = res.data?.schedules || res.data || [];
+        setSchedules(data);
       } catch (err) {
         console.error('Error loading driver trips:', err);
         toast.error('Failed to load trips');
