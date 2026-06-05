@@ -39,6 +39,8 @@ const BookTicket = () => {
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState('');
   const [loading, setLoading] = useState(false);
+  const [busCapacity, setBusCapacity] = useState(40);
+
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookedTicket, setBookedTicket] = useState(null);
   const [takenSeats, setTakenSeats] = useState([]);
@@ -140,9 +142,9 @@ const BookTicket = () => {
     } finally { setLoading(false); }
   };
 
-  const generateSeats = () => {
+  const generateSeats = (count) => {
     const seats = [];
-    for (let i = 1; i <= 40; i++) seats.push(i);
+    for (let i = 1; i <= count; i++) seats.push(i);
     return seats;
   };
 
@@ -320,6 +322,7 @@ const BookTicket = () => {
                   key={schedule.id}
                   onClick={async () => {
                     setSelectedSchedule(schedule);
+                    setBusCapacity(schedule.bus?.capacity || 40);
                     await loadBookedSeats(schedule);
                     setStep(4);
                   }}
@@ -376,7 +379,7 @@ const BookTicket = () => {
 
               {/* Seat grid */}
               <div className="grid grid-cols-4 gap-2.5 max-w-xs mx-auto mb-6">
-                {generateSeats().slice(0, 24).map((seat) => {
+                {generateSeats(busCapacity).map((seat) => {
                   const taken = takenSeats.includes(seat);
                   const isSelected = selectedSeat === seat;
                   return (
