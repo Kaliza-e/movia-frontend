@@ -12,6 +12,7 @@ import AdminSchedules from './pages/admin/Schedules';
 import AdminDrivers from './pages/admin/Drivers';
 import BookTicket from './pages/passenger/BookTicket';
 import MyTickets from './pages/passenger/MyTickets';
+import MyTrips from './pages/driver/MyTrips';
 import USSDSimulator from './pages/passenger/USSDSimulator';
 import { useAuth } from './contexts/AuthContext';
 
@@ -52,6 +53,7 @@ function App() {
       {/* DRIVER ONLY */}
       <Route path="/driver" element={<DriverDashboard />} />
       <Route path="/driver/schedule" element={<DriverSchedules />} />
+      <Route path="/driver/my-trips" element={<MyTrips />} />
      
 
       {/* ADMIN ONLY */}

@@ -108,34 +108,41 @@ const MyTickets = () => {
     loadTickets();
   }, [user, location.state?.refresh]);
 
-  const loadTickets = async () => {
-    try {
-      setLoading(true);
-      const passengerId = getUserId(user);
-      if (passengerId) {
-        let data = [];
-        try {
-          const response = await ticketsAPI.getPassengerTickets(passengerId);
-          data = response.data || [];
-        } catch {
-          // Fallback to user tickets
-        }
-
-        if (data.length === 0) {
-          try {
-            const fallbackResponse = await ticketsAPI.getUserTickets(passengerId);
-            data = fallbackResponse.data || [];
-          } catch { }
-        }
-        setTickets(data);
-      }
-    } catch {
-      toast.error('Failed to load tickets');
+const loadTickets = async () => {
+  try {
+    setLoading(true);
+    const passengerId = getUserId(user);
+    if (!passengerId) {
+      console.warn('No passenger ID available');
       setTickets([]);
-    } finally {
-      setLoading(false);
+      return;
     }
-  };
+    let data = [];
+    try {
+      const response = await ticketsAPI.getPassengerTickets(passengerId);
+      console.log('getPassengerTickets response', response);
+      data = response.data?.tickets || response.data || [];
+    } catch (err) {
+      console.error('Error fetching passenger tickets', err);
+    }
+    if (data.length === 0) {
+      try {
+        const fallbackResponse = await ticketsAPI.getUserTickets(passengerId);
+        console.log('getUserTickets fallback response', fallbackResponse);
+        data = fallbackResponse.data?.tickets || fallbackResponse.data || [];
+      } catch (err) {
+        console.error('Error fetching fallback tickets', err);
+      }
+    }
+    setTickets(data);
+  } catch (err) {
+    console.error('Unexpected error loading tickets', err);
+    toast.error('Failed to load tickets');
+    setTickets([]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const upcomingTickets = tickets.filter(t => {
     const dDate = new Date(t.travelDate || t.schedule?.departureTime || t.departureTime || t.schedule?.departure_time || new Date().toISOString());

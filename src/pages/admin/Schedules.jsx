@@ -82,12 +82,14 @@ const Schedules = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Build payload for schedule creation / update
       const payload = {
         departureTime: new Date(formData.departureTime).toISOString(),
         arrivalTime: new Date(formData.arrivalTime).toISOString(),
         bus: { id: Number(formData.busId) },
         route: { id: Number(formData.routeId) },
-        driver: formData.driverId ? { id: Number(formData.driverId) } : null,
+        // Only include driver field when a driver is selected; omit otherwise to avoid backend validation errors
+        ...(formData.driverId ? { driver: { id: Number(formData.driverId) } } : {})
       };
       if (editingSchedule) {
         await schedulesAPI.update(editingSchedule.id, payload);

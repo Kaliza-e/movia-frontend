@@ -60,7 +60,7 @@ export const Layout = ({ children, title, action }) => {
 
   const driverNavItems = [
     { name: 'Overview', path: '/driver', icon: LayoutDashboard },
-    { name: 'My Trips', path: '/driver/schedule', icon: Calendar },
+    { name: 'My Trips', path: '/driver/my-trips', icon: Calendar },
     { name: 'Live Map', path: '/liveTracking', icon: MapPin },
   ];
 
@@ -87,7 +87,8 @@ export const Layout = ({ children, title, action }) => {
     '/admin/schedules': 'Schedules',
     '/admin/bookings': 'Bookings',
     '/admin/drivers': 'Drivers',
-    '/driver/schedule': 'My Trips',
+    '/driver/schedule': 'My Schedule',
+    '/driver/my-trips': 'My Trips',
   };
   const pageTitle = title || pageTitles[location.pathname] || 'Movia';
 
