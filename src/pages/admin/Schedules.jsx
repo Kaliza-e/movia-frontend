@@ -192,7 +192,8 @@ const Schedules = () => {
             className="inline-flex items-center gap-2 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all"
             style={{ background: "#6C63FF" }}
           >
-            <Plus className="w-4 h-4" /> Add Schedule
+            <Plus className="w-4 h-4" /> 
+            Add Schedule
           </button>
         </div>
 

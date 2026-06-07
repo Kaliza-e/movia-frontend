@@ -31,7 +31,7 @@ const ScheduleCard = ({ schedule }) => {
 
 const MyTrips = () => {
   const { user } = useAuth();
-  const driverId = getUserId(user);
+  const driverId = getUserId(user) ?? user?.driver?.id; 
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -41,7 +41,7 @@ const MyTrips = () => {
         if (!driverId) return;
         const res = await driversAPI.getMySchedules(driverId);
         console.log('Driver schedules response', res);
-        const data = res.data?.schedules || res.data || [];
+        const data = res.data?.schedules ?? res.data?.result ?? res.data?.items ?? res.data ?? []; // handle various payload shapes
         setSchedules(data);
       } catch (err) {
         console.error('Error loading driver trips:', err);

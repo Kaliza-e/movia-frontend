@@ -248,13 +248,11 @@ export const driversAPI = {
 
 
   getMySchedules: (driverId) =>
-    api.get(`/schedules/driver/${driverId}`),
+     api.get(`/drivers/${driverId}/schedules`), // adjusted endpoint
 };
 
 
-// =========================
-// ADMIN API
-// =========================
+
 
 export const adminAPI = {
   getUsers: () =>
@@ -262,6 +260,9 @@ export const adminAPI = {
 
   getBuses: () =>
     api.get('/admin/buses'),
+  // Create a new schedule (admin side)
+  createSchedule: (data) =>
+    api.post('/admin/schedules', data),
 
   createBus: (data) =>
     api.post('/admin/buses', data),
