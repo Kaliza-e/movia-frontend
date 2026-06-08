@@ -1,25 +1,28 @@
 import React from 'react';
-import { Navigate } from 'react-router';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-export const ProtectedRoute = ({
-  children,
-  allowedRoles,
-}) => {
-  const { user, token } = useAuth();
+/**
+ * ProtectedRoute ensures the user is authenticated and has one of the allowedRoles.
+ * If not authenticated, redirects to /login.
+ * If authenticated but role not allowed, redirects to the appropriate dashboard based on actual role.
+ * If children are provided, renders them; otherwise renders an <Outlet/> for nested routes.
+ */
+const ProtectedRoute = ({ allowedRoles, children }) => {
+  const { user, isAuthenticated } = useAuth();
 
- 
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
- 
-  if (
-    allowedRoles &&
-    (!user || !allowedRoles.includes(user.role))
-  ) {
-    return <Navigate to="/unauthorized" replace />;
+  const role = user?.role || 'PASSENGER';
+  if (!allowedRoles.includes(role)) {
+    const target = role === 'ADMIN' ? '/admin' : role === 'DRIVER' ? '/driver' : '/dashboard';
+    return <Navigate to={target} replace />;
   }
 
-  return <>{children}</>;
+  // Role matches – render children if supplied, otherwise render nested outlet
+  return children ? <>{children}</> : <Outlet />;
 };
+
+export default ProtectedRoute;

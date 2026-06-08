@@ -15,6 +15,7 @@ import MyTickets from './pages/passenger/MyTickets';
 import MyTrips from './pages/driver/MyTrips';
 import USSDSimulator from './pages/passenger/USSDSimulator';
 import { useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 // Simple wrapper to route users to the appropriate role-based dashboard dynamically
 const RoleDashboardRedirect = () => {
@@ -46,22 +47,22 @@ function App() {
       <Route path="/dashboard" element={<RoleDashboardRedirect />} />
       
       {/* PASSENGER ONLY */}
-      <Route path="/book" element={<BookTicket/>} />
-      <Route path="/myTickets" element={<MyTickets/>} />
+      <Route path="/book" element={<ProtectedRoute allowedRoles={['PASSENGER']}><BookTicket/></ProtectedRoute>} />
+      <Route path="/myTickets" element={<ProtectedRoute allowedRoles={['PASSENGER']}><MyTickets/></ProtectedRoute>} />
       <Route path="/ussd" element={<USSDSimulator/>} />
 
       {/* DRIVER ONLY */}
-      <Route path="/driver" element={<DriverDashboard />} />
-      <Route path="/driver/schedule" element={<DriverSchedules />} />
-      <Route path="/driver/my-trips" element={<MyTrips />} />
+      <Route path="/driver" element={<ProtectedRoute allowedRoles={['DRIVER']}><DriverDashboard /></ProtectedRoute>} />
+      <Route path="/driver/schedule" element={<ProtectedRoute allowedRoles={['DRIVER']}><DriverSchedules/></ProtectedRoute>} />
+      <Route path="/driver/my-trips" element={<ProtectedRoute allowedRoles={['DRIVER']}><MyTrips/></ProtectedRoute>} />
      
 
       {/* ADMIN ONLY */}
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/routes" element={<AdminRoutes />} />
-      <Route path="/admin/buses" element={<AdminBuses />} />
-      <Route path="/admin/schedules" element={<AdminSchedules />} />
-      <Route path="/admin/drivers" element={<AdminDrivers/>} />
+      <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin/routes" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminRoutes /></ProtectedRoute>} />
+      <Route path="/admin/buses" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminBuses /></ProtectedRoute>} />
+      <Route path="/admin/schedules" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminSchedules /></ProtectedRoute>} />
+      <Route path="/admin/drivers" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDrivers/></ProtectedRoute>} />
 
       {/* DEFAULT */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
