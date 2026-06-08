@@ -128,16 +128,20 @@ const BookTicket = () => {
     if (takenSeats.includes(Number(selectedSeat))) { toast.error('Seat already taken. Choose another.'); return; }
     setLoading(true);
     try {
-      const response = await ticketsAPI.book({
+      const payload = {
         passengerId,
         scheduleId: selectedSchedule.id,
-        seatNumber: Number(selectedSeat),
-      });
+        seatNumber: Number(selectedSeat)
+      };
+      console.log('Booking payload:', payload);
+      const response = await ticketsAPI.book(payload);
+      console.log('Booking response:', response);
       setBookedTicket(response.data);
       setBookingSuccess(true);
       confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       toast.success('Ticket booked successfully!');
     } catch (error) {
+      console.error('Booking error:', error);
       toast.error(error?.response?.data?.message || 'Failed to book ticket.');
     } finally { setLoading(false); }
   };
@@ -294,7 +298,7 @@ const BookTicket = () => {
                     </span>
                   </div>
                   <h4 className="font-bold text-[#1A1A2E] mb-3 text-sm">
-                    {route.name || `${route.departureLocation || from} → ${route.destinationLocation || to}`}
+                    {route.name || `${route.departureLocation || route.origin || route.from} → ${route.destinationLocation || route.destination || route.to}`}
                   </h4>
                   <div className="space-y-1.5 text-xs text-[#6B7280]">
                     <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" />{route.distanceKm || route.distance || '90'} km</div>
