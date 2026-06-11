@@ -35,6 +35,7 @@ const BookTicket = () => {
   const [to, setTo] = useState('');
   const [routes, setRoutes] = useState([]);
   const [schedules, setSchedules] = useState([]);
+  const [scheduleBookedSeats, setScheduleBookedSeats] = useState({}); // key: scheduleId, value: array of taken seats
   const [selectedRoute, setSelectedRoute] = useState(null);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
   const [selectedSeat, setSelectedSeat] = useState('');
@@ -89,20 +90,24 @@ const BookTicket = () => {
     setLoading(true);
     try {
       const response = await schedulesAPI.getByRoute(route.id);
-      let data = response.data || [];
-      if (data.length === 0) {
-        const all = await schedulesAPI.getAll();
-        data = all.data || [];
-        if (data.length > 0) toast.info('Showing all available schedules');
-      }
+      const data = response.data || [];
       setSchedules(data);
+      
+      // Load booked seats for all schedules
+      const bookedSeatsMap = {};
+      await Promise.all(data.map(async (schedule) => {
+        try {
+          const res = await schedulesAPI.getBookedSeats(schedule.id);
+          bookedSeatsMap[schedule.id] = res.data || [];
+        } catch {
+          bookedSeatsMap[schedule.id] = [];
+        }
+      }));
+      setScheduleBookedSeats(bookedSeatsMap);
+      
       setStep(3);
     } catch {
-      try {
-        const all = await schedulesAPI.getAll();
-        setSchedules(all.data || []);
-        setStep(3);
-      } catch { toast.error('Unable to load schedules.'); }
+      toast.error('Unable to load schedules for this route.');
     } finally { setLoading(false); }
   };
 
@@ -321,41 +326,47 @@ const BookTicket = () => {
               <button onClick={() => setStep(2)} className="text-sm font-semibold px-4 py-2 rounded-xl border border-[#E5E7EB] text-[#6B7280] hover:bg-[#F9FAFB] transition-colors">Back</button>
             </div>
             <div className="space-y-4">
-              {schedules.map((schedule) => (
-                <div
-                  key={schedule.id}
-                  onClick={async () => {
-                    setSelectedSchedule(schedule);
-                    setBusCapacity(schedule.bus?.capacity || 40);
-                    await loadBookedSeats(schedule);
-                    setStep(4);
-                  }}
-                  className="bg-white rounded-[16px] p-5 cursor-pointer hover:-translate-y-0.5 transition-all duration-200"
-                  style={{ boxShadow: '0 2px 16px rgba(108,99,255,0.07)' }}
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-3 font-bold text-[#1A1A2E]">
-                        <Clock className="w-4 h-4" style={{ color: '#6C63FF' }} />
-                        <span>{schedule.departureTime || '08:00 AM'}</span>
-                        <ArrowRight className="w-4 h-4 text-[#6B7280]" />
-                        <span>{schedule.arrivalTime || '10:00 AM'}</span>
+              {schedules.map((schedule) => {
+                const bookedSeats = scheduleBookedSeats[schedule.id] || [];
+                const busCapacity = schedule.bus?.capacity || 40;
+                const availableSeats = Math.max(0, busCapacity - bookedSeats.length);
+                
+                return (
+                  <div
+                    key={schedule.id}
+                    onClick={async () => {
+                      setSelectedSchedule(schedule);
+                      setBusCapacity(busCapacity);
+                      setTakenSeats(bookedSeats);
+                      setStep(4);
+                    }}
+                    className="bg-white rounded-[16px] p-5 cursor-pointer hover:-translate-y-0.5 transition-all duration-200"
+                    style={{ boxShadow: '0 2px 16px rgba(108,99,255,0.07)' }}
+                  >
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 font-bold text-[#1A1A2E]">
+                          <Clock className="w-4 h-4" style={{ color: '#6C63FF' }} />
+                          <span>{schedule.departureTime ? new Date(schedule.departureTime).toLocaleString() : '08:00 AM'}</span>
+                          <ArrowRight className="w-4 h-4 text-[#6B7280]" />
+                          <span>{schedule.arrivalTime ? new Date(schedule.arrivalTime).toLocaleString() : '10:00 AM'}</span>
+                        </div>
+                        <div className="flex gap-5 text-xs text-[#6B7280]">
+                          <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.bus?.plateNumber || schedule.bus?.plate_number || 'RAB 123A'}</span>
+                        </div>
                       </div>
-                      <div className="flex gap-5 text-xs text-[#6B7280]">
-                        <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.bus?.plateNumber || schedule.bus?.plate_number || 'RAB 123A'}</span>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: '#DCFCE7', color: '#16A34A' }}>
+                          {availableSeats} seats left
+                        </span>
+                        <button className="text-xs font-semibold px-4 py-2 rounded-xl text-white" style={{ background: '#6C63FF' }}>
+                          Select
+                        </button>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: '#DCFCE7', color: '#16A34A' }}>
-                        {schedule.bus.capacity || 15} seats left
-                      </span>
-                      <button className="text-xs font-semibold px-4 py-2 rounded-xl text-white" style={{ background: '#6C63FF' }}>
-                        Select
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
