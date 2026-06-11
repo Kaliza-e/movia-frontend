@@ -1,6 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
-import { authAPI } from '../services/api';
+import { authAPI, setAuthToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -28,9 +27,7 @@ export const AuthProvider = ({ children }) => {
 
     if (savedToken) {
       setToken(savedToken);
-      axios.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${savedToken}`;
+      setAuthToken(savedToken);
     }
 
     if (savedUser) {
@@ -64,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       // If the login response has no name fields, fetch the full profile
       if (token && !extractName(userData)) {
         try {
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          setAuthToken(token);
           const meRes = await authAPI.me();
           if (meRes.data) {
             userData = { ...userData, ...meRes.data };
@@ -80,7 +77,7 @@ export const AuthProvider = ({ children }) => {
       setToken(token);
       setUser(userData);
 
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      setAuthToken(token);
 
       return userData;
 
@@ -96,9 +93,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
 
-    delete axios.defaults.headers.common[
-      'Authorization'
-    ];
+    setAuthToken(null);
   };
 
   return (

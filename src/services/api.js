@@ -10,6 +10,14 @@ const api = axios.create({
   },
 });
 
+// Function to set auth token on the api instance
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
 
 // =========================
 // REQUEST INTERCEPTOR
@@ -18,8 +26,10 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
+    console.log('API Request:', config.url, 'Token:', token ? 'present' : 'missing');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log('Authorization header set');
     }
     return config;
   },
@@ -43,6 +53,7 @@ api.interceptors.response.use(
   }
 );
 
+export { api };
 export default api;
 
 

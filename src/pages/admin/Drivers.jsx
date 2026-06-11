@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../../components/Layout';
-import { driversAPI, adminAPI, authAPI } from '../../services/api';
+import { driversAPI } from '../../services/api';
 import {
   User,
   Plus,
@@ -33,30 +33,8 @@ const Drivers = () => {
   const loadDrivers = async () => {
     try {
       setLoading(true);
-      const [driversRes, usersRes] = await Promise.all([
-        driversAPI.getAll(),
-        adminAPI.getUsers().catch(() => ({ data: [] }))
-      ]);
-
-      const adminDrivers = driversRes.data || [];
-      const selfDrivers = (usersRes.data || [])
-        .filter(u => u.role === 'DRIVER')
-        .map(u => ({
-          id: u.id,
-          firstName: u.firstName || u.name?.split(' ')[0] || u.username,
-          lastName: u.lastName || u.name?.split(' ').slice(1).join(' ') || '(Self-Registered)',
-          phoneNumber: u.phoneNumber || u.phone || 'N/A',
-          licenseNumber: u.licenseNumber || 'Self-Registered User',
-          isSelfRegistered: true
-        }));
-
-      const allDriversMap = new Map();
-      [...adminDrivers, ...selfDrivers].forEach(d => {
-        if (!allDriversMap.has(d.id)) {
-          allDriversMap.set(d.id, d);
-        }
-      });
-      setDrivers(Array.from(allDriversMap.values()));
+      const res = await driversAPI.getAll();
+      setDrivers(res.data || []);
     } catch {
       toast.error('Failed to load drivers');
     } finally {
@@ -72,33 +50,7 @@ const Drivers = () => {
         await driversAPI.update(editingDriver.id, formData);
         toast.success('Driver updated');
       } else {
-        let createdUserId = null;
-        try {
-          // Auto-create user for the driver so they are in both tables
-          const baseName = `${formData.firstName.toLowerCase().replace(/\s+/g, '')}.${formData.lastName.toLowerCase().replace(/\s+/g, '')}`;
-          const generatedEmail = `${baseName}@driver.movia.com`;
-          const generatedUsername = `${baseName}${Math.floor(Math.random() * 1000)}`;
-
-          const userRes = await authAPI.register({
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            username: generatedUsername,
-            email: generatedEmail,
-            phoneNumber: formData.phoneNumber,
-            password: 'Driver123!',
-            role: 'DRIVER'
-          });
-          createdUserId = userRes?.data?.user?.id || userRes?.data?.id;
-        } catch (e) {
-          console.warn('Could not auto-create user for driver', e);
-        }
-
-        const payload = {
-          ...formData,
-          userId: createdUserId,
-          user_id: createdUserId
-        };
-        await driversAPI.create(payload);
+        await driversAPI.create(formData);
         toast.success('Driver created');
       }
 

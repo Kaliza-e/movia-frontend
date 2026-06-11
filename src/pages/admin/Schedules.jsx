@@ -5,7 +5,6 @@ import {
   busesAPI,
   routesAPI,
   driversAPI,
-  adminAPI,
 } from "../../services/api";
 import {
   Calendar,
@@ -44,34 +43,17 @@ const Schedules = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      const [schedulesRes, busesRes, routesRes, driversRes, usersRes] = await Promise.all([
+      const [schedulesRes, busesRes, routesRes, driversRes] = await Promise.all([
         schedulesAPI.getAll(),
         busesAPI.getAll(),
         routesAPI.getAll(),
         driversAPI.getAll(),
-        adminAPI.getUsers().catch(() => ({ data: [] }))
       ]);
       setSchedules(schedulesRes.data || []);
       setBuses(busesRes.data || []);
       setRoutes(routesRes.data || []);
 
-      const adminDrivers = driversRes.data || [];
-      const selfDrivers = (usersRes.data || [])
-        .filter(u => u.role === 'DRIVER')
-        .map(u => ({
-          id: u.id,
-          firstName: u.firstName || u.name?.split(' ')[0] || u.username,
-          lastName: u.lastName || u.name?.split(' ').slice(1).join(' ') || '(Self-Registered)'
-        }));
-
-      // Combine drivers and filter out any potential duplicates by id if backend shares ids
-      const allDriversMap = new Map();
-      [...adminDrivers, ...selfDrivers].forEach(d => {
-        if (!allDriversMap.has(d.id)) {
-          allDriversMap.set(d.id, d);
-        }
-      });
-      setDrivers(Array.from(allDriversMap.values()));
+      setDrivers(driversRes.data || []);
     } catch {
       toast.error("Failed to load data");
     } finally {
@@ -91,19 +73,13 @@ const Schedules = () => {
         // Only include driver field when a driver is selected; omit otherwise to avoid backend validation errors
         ...(formData.driverId ? { driver: { id: Number(formData.driverId) } } : {})
       };
+      console.log('Sending payload:', JSON.stringify(payload));
       if (editingSchedule) {
         await schedulesAPI.update(editingSchedule.id, payload);
         toast.success("Schedule updated");
       } else {
-        try {
-          await adminAPI.createSchedule(payload);
-          toast.success("Schedule created");
-        } catch (createErr) {
-          // Fallback to generic if admin endpoint fails
-          console.warn('Admin create failed, trying generic...', createErr);
-          await schedulesAPI.create(payload);
-          toast.success("Schedule created");
-        }
+        await schedulesAPI.create(payload);
+        toast.success("Schedule created");
       }
       setShowModal(false);
       setEditingSchedule(null);
@@ -115,7 +91,8 @@ const Schedules = () => {
         driverId: "",
       });
       loadData();
-    } catch {
+    } catch (err) {
+      console.error('Error saving schedule:', err);
       toast.error("Failed to save schedule");
     }
   };
