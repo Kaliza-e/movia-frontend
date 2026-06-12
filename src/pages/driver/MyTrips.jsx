@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Layout } from '../../components/Layout';
 import { useAuth } from '../../contexts/AuthContext';
 import { driversAPI } from '../../services/api';
-import { getUserId, getScheduleRoute, getScheduleBus } from '../../utils/data';
+import { getUserId, getScheduleRoute, getScheduleBus, getRouteName } from '../../utils/data';
 import { Calendar, Bus, MapPin, ChevronRight } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -15,7 +15,7 @@ const ScheduleCard = ({ schedule }) => {
       <div className="flex items-center gap-3">
         <Bus className="w-5 h-5 text-indigo-500" />
         <div>
-          <p className="font-semibold text-[#1A1A2E]">{route?.name || `${route?.origin || 'Origin'} → ${route?.destination || 'Destination'}`}</p>
+          <p className="font-semibold text-[#1A1A2E]">{getRouteName(route)}</p>
           <p className="text-sm text-gray-500 flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5" /> {getScheduleBus(schedule)?.plateNumber || getScheduleBus(schedule)?.plate_number || 'Bus'}
           </p>

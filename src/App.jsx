@@ -10,6 +10,7 @@ import AdminRoutes from './pages/admin/Routes';
 import AdminBuses from './pages/admin/Buses';
 import AdminSchedules from './pages/admin/Schedules';
 import AdminDrivers from './pages/admin/Drivers';
+import AdminBookings from './pages/admin/Bookings';
 import BookTicket from './pages/passenger/BookTicket';
 import MyTickets from './pages/passenger/MyTickets';
 import MyTrips from './pages/driver/MyTrips';
@@ -63,6 +64,7 @@ function App() {
       <Route path="/admin/buses" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminBuses /></ProtectedRoute>} />
       <Route path="/admin/schedules" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminSchedules /></ProtectedRoute>} />
       <Route path="/admin/drivers" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDrivers/></ProtectedRoute>} />
+      <Route path="/admin/bookings" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminBookings /></ProtectedRoute>} />
 
       {/* DEFAULT */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

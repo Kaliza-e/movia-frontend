@@ -122,8 +122,11 @@ export const routesAPI = {
 // =========================
 
 export const searchAPI = {
-  searchRoutes: (from, to) =>
-    api.get(`/routes/search?origin=${from}&destination=${to}`),
+  searchRoutes: (from, to, date) => {
+    const params = new URLSearchParams({ from, to });
+    if (date) params.append('date', date);
+    return api.get(`/search?${params.toString()}`);
+  },
 };
 
 
@@ -133,7 +136,14 @@ export const searchAPI = {
 
 export const ticketsAPI = {
   book: (data) =>
-    api.post('/tickets/book', data),
+    api.post('/tickets/book', {
+      userId: data.userId ?? data.passengerId,
+      scheduleId: data.scheduleId,
+      seatNumber: data.seatNumber,
+    }),
+
+  getMyTickets: () =>
+    api.get('/tickets/my-tickets'),
 
   getPassengerTickets: (id) =>
     api.get(`/tickets/passenger/${id}`),
@@ -258,8 +268,8 @@ export const driversAPI = {
     api.delete(`/drivers/${id}`),
 
 
-  getMySchedules: (driverId) =>
-     api.get(`/drivers/${driverId}/schedules`), // adjusted endpoint
+  getMySchedules: (userId) =>
+    api.get(`/drivers/user/${userId}/schedules`),
 };
 
 

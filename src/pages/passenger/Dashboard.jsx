@@ -3,7 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { ticketsAPI, statsAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
-import { getDisplayName, getRouteName, getTicketBus, getTicketRoute, getUserId } from '../../utils/data';
+import {
+  getDisplayName,
+  getRouteName,
+  getTicketBus,
+  getTicketRoute,
+  getUserId,
+  getTicketStatus,
+  getTicketDepartureTime,
+} from '../../utils/data';
 import {
   Ticket, MapPin, Clock, ArrowRight,
   Bus, Calendar, Smartphone,
@@ -72,7 +80,7 @@ const PassengerDashboard = () => {
       setLoading(true);
       if (passengerId) {
         const [ticketsRes, statsRes] = await Promise.all([
-          ticketsAPI.getPassengerTickets(passengerId),
+          ticketsAPI.getMyTickets().catch(() => ticketsAPI.getPassengerTickets(passengerId)),
           statsAPI.getPassengerStats(passengerId),
         ]);
         const tickets = ticketsRes.data || [];
@@ -80,8 +88,11 @@ const PassengerDashboard = () => {
         if (statsRes.data) {
           setStats({
             total: statsRes.data.total || tickets.length,
-            upcoming: statsRes.data.upcoming || tickets.filter(t => new Date(t.travelDate) > new Date()).length,
-            completed: statsRes.data.completed || tickets.filter(t => t.status === 'COMPLETED').length,
+            upcoming: statsRes.data.upcoming || tickets.filter((t) => {
+              const departure = getTicketDepartureTime(t);
+              return departure && new Date(departure) > new Date() && getTicketStatus(t) !== 'CANCELLED';
+            }).length,
+            completed: statsRes.data.completed || tickets.filter((t) => getTicketStatus(t) === 'COMPLETED').length,
           });
         }
       }
@@ -99,7 +110,7 @@ const PassengerDashboard = () => {
     try {
       if (passengerId) {
         const [ticketsRes, statsRes] = await Promise.all([
-          ticketsAPI.getPassengerTickets(passengerId),
+          ticketsAPI.getMyTickets().catch(() => ticketsAPI.getPassengerTickets(passengerId)),
           statsAPI.getPassengerStats(passengerId),
         ]);
         const tickets = ticketsRes.data || [];
@@ -107,8 +118,11 @@ const PassengerDashboard = () => {
         if (statsRes.data) {
           setStats({
             total: statsRes.data.total || tickets.length,
-            upcoming: statsRes.data.upcoming || tickets.filter(t => new Date(t.travelDate) > new Date()).length,
-            completed: statsRes.data.completed || tickets.filter(t => t.status === 'COMPLETED').length,
+            upcoming: statsRes.data.upcoming || tickets.filter((t) => {
+              const departure = getTicketDepartureTime(t);
+              return departure && new Date(departure) > new Date() && getTicketStatus(t) !== 'CANCELLED';
+            }).length,
+            completed: statsRes.data.completed || tickets.filter((t) => getTicketStatus(t) === 'COMPLETED').length,
           });
         }
         toast.success('Data refreshed successfully');

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { driversAPI } from '../../services/api';
 import { Layout } from '../../components/Layout';
-import { getDisplayName, getUserId } from '../../utils/data';
+import { getDisplayName, getUserId, getScheduleRoute, getScheduleBus, getRouteName } from '../../utils/data';
 import {
   Bus, Navigation, MapPin, Clock, Calendar,
   CheckCircle, TrendingUp, Activity, Car,
@@ -82,6 +82,7 @@ const DriverDashboard = () => {
   });
 
   const displaySchedules = todaySchedules.slice(0, 4);
+  const firstBus = schedules[0] ? getScheduleBus(schedules[0]) : null;
 
   return (
     <Layout>
@@ -215,7 +216,7 @@ const DriverDashboard = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-[#1A1A2E] text-sm">
-                          {schedule.origin || schedule.from || 'Kigali'} → {schedule.destination || schedule.to || 'Musanze'}
+                          {getRouteName(getScheduleRoute(schedule))}
                         </p>
                         <p className="text-xs text-[#6B7280] mt-0.5">
                           {schedule.departureTime || schedule.departure_time
@@ -251,12 +252,12 @@ const DriverDashboard = () => {
                 </div>
                 <div>
                   <p className="font-bold text-[#1A1A2E]">Movia Bus</p>
-                  <p className="text-sm text-[#6B7280]">RAB 123A</p>
+                  <p className="text-sm text-[#6B7280]">{firstBus?.plateNumber || 'Not assigned'}</p>
                 </div>
               </div>
               <div className="space-y-3 text-sm">
                 {[
-                  { label: 'Capacity', value: '45 seats' },
+                  { label: 'Capacity', value: firstBus?.capacity ? `${firstBus.capacity} seats` : '—' },
                   { label: 'Fuel Level', value: '85%', valueColor: '#22C55E' },
                   { label: 'Status', value: 'Active', valueColor: '#22C55E' },
                 ].map((s) => (
