@@ -98,11 +98,15 @@ const handleSubmit = async (e) => {
     setEditingSchedule(null);
     setFormData({ departureTime: "", arrivalTime: "", busId: "", routeId: "", driverId: "" });
     loadData();
-  } catch (err) {
-    console.error("Error saving schedule:", err);
-    // Show backend error message if available
-    const msg = err?.response?.data?.message || err?.response?.data || "Failed to save schedule";
-    toast.error(typeof msg === "string" ? msg : "Failed to save schedule");
+    } catch (err) {
+  console.error('Error saving schedule:', err);
+  console.error('Backend response:', err?.response?.data);
+  console.error('Status:', err?.response?.status);
+  const msg = err?.response?.data?.message 
+    || err?.response?.data 
+    || 'Failed to save schedule';
+  toast.error(typeof msg === 'string' ? msg : JSON.stringify(msg));
+
   }
 };
 
