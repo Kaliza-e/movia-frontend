@@ -61,41 +61,50 @@ const Schedules = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      // Build payload for schedule creation / update
-      const payload = {
-        departureTime: new Date(formData.departureTime).toISOString(),
-        arrivalTime: new Date(formData.arrivalTime).toISOString(),
-        bus: { id: Number(formData.busId) },
-        route: { id: Number(formData.routeId) },
-        // Only include driver field when a driver is selected; omit otherwise to avoid backend validation errors
-        ...(formData.driverId ? { driver: { id: Number(formData.driverId) } } : {})
-      };
-      console.log('Sending payload:', JSON.stringify(payload));
-      if (editingSchedule) {
-        await schedulesAPI.update(editingSchedule.id, payload);
-        toast.success("Schedule updated");
-      } else {
-        await schedulesAPI.create(payload);
-        toast.success("Schedule created");
-      }
-      setShowModal(false);
-      setEditingSchedule(null);
-      setFormData({
-        departureTime: "",
-        arrivalTime: "",
-        busId: "",
-        routeId: "",
-        driverId: "",
-      });
-      loadData();
-    } catch (err) {
-      console.error('Error saving schedule:', err);
-      toast.error("Failed to save schedule");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    // Validate dates before converting
+    const departure = new Date(formData.departureTime);
+    const arrival = new Date(formData.arrivalTime);
+
+    if (isNaN(departure.getTime()) || isNaN(arrival.getTime())) {
+      toast.error("Please enter valid departure and arrival times");
+      return;
     }
-  };
+
+    if (arrival <= departure) {
+      toast.error("Arrival time must be after departure time");
+      return;
+    }
+
+    const payload = {
+      departureTime: departure.toISOString(),
+      arrivalTime: arrival.toISOString(),
+      bus: { id: Number(formData.busId) },
+      route: { id: Number(formData.routeId) },
+      ...(formData.driverId ? { driver: { id: Number(formData.driverId) } } : {}),
+    };
+
+    if (editingSchedule) {
+      await schedulesAPI.update(editingSchedule.id, payload);
+      toast.success("Schedule updated");
+    } else {
+      await schedulesAPI.create(payload);
+      toast.success("Schedule created");
+    }
+
+    setShowModal(false);
+    setEditingSchedule(null);
+    setFormData({ departureTime: "", arrivalTime: "", busId: "", routeId: "", driverId: "" });
+    loadData();
+  } catch (err) {
+    console.error("Error saving schedule:", err);
+    // Show backend error message if available
+    const msg = err?.response?.data?.message || err?.response?.data || "Failed to save schedule";
+    toast.error(typeof msg === "string" ? msg : "Failed to save schedule");
+  }
+};
 
   const handleEdit = (schedule) => {
     setEditingSchedule(schedule);

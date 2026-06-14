@@ -309,9 +309,6 @@ export const adminAPI = {
   getSchedules: () =>
     api.get('/admin/schedules'),
 
-  createSchedule: (data) =>
-    api.post('/admin/schedules', data),
-
   getBookings: () =>
     api.get('/admin/bookings'),
 
