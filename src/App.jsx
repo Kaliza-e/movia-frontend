@@ -56,7 +56,7 @@ function App() {
       <Route path="/driver" element={<ProtectedRoute allowedRoles={['DRIVER']}><DriverDashboard /></ProtectedRoute>} />
       <Route path="/driver/schedule" element={<ProtectedRoute allowedRoles={['DRIVER']}><DriverSchedules/></ProtectedRoute>} />
       <Route path="/driver/my-trips" element={<ProtectedRoute allowedRoles={['DRIVER']}><MyTrips/></ProtectedRoute>} />
-     
+       Route  
 
       {/* ADMIN ONLY */}
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
