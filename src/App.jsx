@@ -15,6 +15,7 @@ import BookTicket from './pages/passenger/BookTicket';
 import MyTickets from './pages/passenger/MyTickets';
 import MyTrips from './pages/driver/MyTrips';
 import USSDSimulator from './pages/passenger/USSDSimulator';
+import NotFound from './pages/NotFound';
 import { useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -56,8 +57,7 @@ function App() {
       <Route path="/driver" element={<ProtectedRoute allowedRoles={['DRIVER']}><DriverDashboard /></ProtectedRoute>} />
       <Route path="/driver/schedule" element={<ProtectedRoute allowedRoles={['DRIVER']}><DriverSchedules/></ProtectedRoute>} />
       <Route path="/driver/my-trips" element={<ProtectedRoute allowedRoles={['DRIVER']}><MyTrips/></ProtectedRoute>} />
-       Route  
-
+      
       {/* ADMIN ONLY */}
       <Route path="/admin" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
       <Route path="/admin/routes" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminRoutes /></ProtectedRoute>} />
@@ -67,7 +67,8 @@ function App() {
       <Route path="/admin/bookings" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminBookings /></ProtectedRoute>} />
 
       {/* DEFAULT */}
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }

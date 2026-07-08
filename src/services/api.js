@@ -330,4 +330,13 @@ export const statsAPI = {
 
   getDriverStats: (driverId) =>
     api.get(`/stats/driver/${driverId}`),
+
+  getDailyReport: () =>
+    api.get('/stats/reports/daily', { responseType: 'blob' }),
+
+  getWeeklyReport: () =>
+    api.get('/stats/reports/weekly', { responseType: 'blob' }),
+
+  getMonthlyReport: () =>
+    api.get('/stats/reports/monthly', { responseType: 'blob' }),
 };
