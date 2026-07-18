@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../../components/Layout';
-import { driversAPI } from '../../services/api';
+import { driversAPI, busCompaniesAPI } from '../../services/api';
 import {
   User,
   Plus,
@@ -8,26 +8,32 @@ import {
   Trash2,
   Search,
   Phone,
-  BadgeCheck
+  BadgeCheck,
+  Mail,
+  Building2
 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const Drivers = () => {
   const [drivers, setDrivers] = useState([]);
+  const [busCompanies, setBusCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingDriver, setEditingDriver] = useState(null);
+  const [registerWithCredentials, setRegisterWithCredentials] = useState(false);
 
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     phoneNumber: '',
-    licenseNumber: ''
+    licenseNumber: '',
+    busCompanyId: ''
   });
 
   useEffect(() => {
     loadDrivers();
+    loadBusCompanies();
   }, []);
 
   const loadDrivers = async () => {
@@ -42,6 +48,15 @@ const Drivers = () => {
     }
   };
 
+  const loadBusCompanies = async () => {
+    try {
+      const res = await busCompaniesAPI.getAll();
+      setBusCompanies(res.data || []);
+    } catch {
+      console.error('Failed to load bus companies');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -49,6 +64,9 @@ const Drivers = () => {
       if (editingDriver) {
         await driversAPI.update(editingDriver.id, formData);
         toast.success('Driver updated');
+      } else if (registerWithCredentials && formData.busCompanyId) {
+        await driversAPI.registerWithCredentials(formData, formData.busCompanyId);
+        toast.success('Driver registered with credentials. Email sent with login details.');
       } else {
         await driversAPI.create(formData);
         toast.success('Driver created');
@@ -56,12 +74,14 @@ const Drivers = () => {
 
       setShowModal(false);
       setEditingDriver(null);
+      setRegisterWithCredentials(false);
 
       setFormData({
         firstName: '',
         lastName: '',
         phoneNumber: '',
-        licenseNumber: ''
+        licenseNumber: '',
+        busCompanyId: ''
       });
 
       loadDrivers();
@@ -77,7 +97,8 @@ const Drivers = () => {
       firstName: driver.firstName || '',
       lastName: driver.lastName || '',
       phoneNumber: driver.phoneNumber || '',
-      licenseNumber: driver.licenseNumber || ''
+      licenseNumber: driver.licenseNumber || '',
+      busCompanyId: driver.busCompany?.id || ''
     });
 
     setShowModal(true);
@@ -119,11 +140,13 @@ const Drivers = () => {
           <button
             onClick={() => {
               setEditingDriver(null);
+              setRegisterWithCredentials(false);
               setFormData({
                 firstName: '',
                 lastName: '',
                 phoneNumber: '',
-                licenseNumber: ''
+                licenseNumber: '',
+                busCompanyId: ''
               });
               setShowModal(true);
             }}
@@ -194,6 +217,13 @@ const Drivers = () => {
                     {driver.licenseNumber}
                   </div>
 
+                  {driver.busCompany && (
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      {driver.busCompany.name}
+                    </div>
+                  )}
+
                 </div>
               </div>
             ))}
@@ -252,10 +282,57 @@ const Drivers = () => {
                   required
                 />
 
+                {!editingDriver && (
+                  <>
+                    <select
+                      value={formData.busCompanyId}
+                      onChange={(e) =>
+                        setFormData({ ...formData, busCompanyId: e.target.value })
+                      }
+                      className={inputCls}
+                    >
+                      <option value="">Select Bus Company (Optional)</option>
+                      {busCompanies.map((company) => (
+                        <option key={company.id} value={company.id}>
+                          {company.name}
+                        </option>
+                      ))}
+                    </select>
+
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        id="registerWithCredentials"
+                        checked={registerWithCredentials}
+                        onChange={(e) => setRegisterWithCredentials(e.target.checked)}
+                        className="w-4 h-4"
+                      />
+                      <label htmlFor="registerWithCredentials" className="text-sm text-gray-700">
+                        Register with email credentials
+                      </label>
+                    </div>
+
+                    {registerWithCredentials && (
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
+                        <div className="flex items-start gap-2">
+                          <Mail className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                          <p>
+                            This will create a user account for the driver and send login credentials via email.
+                            The driver will be able to log in and manage their schedules.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
                 <div className="flex gap-3 pt-2">
                   <button
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => {
+                      setShowModal(false);
+                      setRegisterWithCredentials(false);
+                    }}
                     className="flex-1 py-3 border rounded-xl"
                   >
                     Cancel
@@ -263,10 +340,11 @@ const Drivers = () => {
 
                   <button
                     type="submit"
-                    className="flex-1 py-3 text-white rounded-xl"
+                    disabled={registerWithCredentials && !formData.busCompanyId}
+                    className="flex-1 py-3 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{ background: '#6C63FF' }}
                   >
-                    {editingDriver ? 'Update' : 'Create'}
+                    {editingDriver ? 'Update' : registerWithCredentials ? 'Register & Send Email' : 'Create'}
                   </button>
                 </div>
 

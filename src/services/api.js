@@ -127,6 +127,11 @@ export const searchAPI = {
     if (date) params.append('date', date);
     return api.get(`/search?${params.toString()}`);
   },
+
+  getRoutesGroupedByBusCompanies: (from, to) => {
+    const params = new URLSearchParams({ from, to });
+    return api.get(`/search/grouped?${params.toString()}`);
+  },
 };
 
 
@@ -136,8 +141,8 @@ export const searchAPI = {
 
 export const ticketsAPI = {
   book: (data) =>
-    api.post('/tickets/book', {
-      userId: data.userId ?? data.passengerId,
+    api.post('/bookings', {
+      passengerId: data.userId ?? data.passengerId,
       scheduleId: data.scheduleId,
       seatNumber: data.seatNumber,
     }),
@@ -146,7 +151,7 @@ export const ticketsAPI = {
     api.get('/tickets/my-tickets'),
 
   getPassengerTickets: (id) =>
-    api.get(`/tickets/passenger/${id}`),
+    api.get(`/bookings/passenger/${id}`),
 
   getUserTickets: (id) =>
     api.get(`/tickets/user/${id}`),
@@ -154,8 +159,8 @@ export const ticketsAPI = {
   getAll: () =>
     api.get('/tickets'),
 
-  cancel: (id) =>
-    api.delete(`/tickets/cancel/${id}`),
+  cancel: (id, userId) =>
+    api.delete(`/bookings/${id}/cancel?userId=${userId}`),
 };
 
 
@@ -261,15 +266,20 @@ export const driversAPI = {
   create: (data) =>
     api.post('/drivers', data),
 
+  registerWithCredentials: (data, busCompanyId) =>
+    api.post(`/drivers/register-with-credentials?busCompanyId=${busCompanyId}`, data),
+
   update: (id, data) =>
     api.put(`/drivers/${id}`, data),
 
   delete: (id) =>
     api.delete(`/drivers/${id}`),
 
-
   getMySchedules: (userId) =>
     api.get(`/drivers/user/${userId}/schedules`),
+  
+  getByBusCompany: (busCompanyId) =>
+    api.get(`/drivers/bus-company/${busCompanyId}`),
 };
 
 
@@ -314,6 +324,56 @@ export const adminAPI = {
 
   getDrivers: () =>
     api.get('/admin/drivers'),
+};
+
+
+// =========================
+// BUS COMPANIES API
+// =========================
+
+export const busCompaniesAPI = {
+  getAll: () =>
+    api.get('/bus-companies'),
+
+  getById: (id) =>
+    api.get(`/bus-companies/${id}`),
+
+  create: (data) =>
+    api.post('/bus-companies', data),
+
+  update: (id, data) =>
+    api.put(`/bus-companies/${id}`, data),
+
+  delete: (id) =>
+    api.delete(`/bus-companies/${id}`),
+};
+
+
+// =========================
+// NOTIFICATIONS API
+// =========================
+
+export const notificationsAPI = {
+  getUserNotifications: (userId) =>
+    api.get(`/notifications/user/${userId}`),
+
+  markAsRead: (notificationId) =>
+    api.put(`/notifications/${notificationId}/read`),
+};
+
+
+// =========================
+// OAUTH2 API
+// =========================
+
+export const oauth2API = {
+  googleLogin: () => {
+    // Redirect to Google OAuth2 login
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  },
+
+  handleOAuth2Success: () =>
+    api.get('/oauth2/success'),
 };
 
 

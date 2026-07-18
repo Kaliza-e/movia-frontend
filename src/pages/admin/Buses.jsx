@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '../../components/Layout';
-import { busesAPI } from '../../services/api';
-import { Bus, Plus, Edit, Trash2, Search, Users, Activity } from 'lucide-react';
+import { busesAPI, busCompaniesAPI } from '../../services/api';
+import { Bus, Plus, Edit, Trash2, Search, Users, Activity, Building2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const statusConfig = {
@@ -12,13 +12,17 @@ const statusConfig = {
 
 const Buses = () => {
   const [buses, setBuses] = useState([]);
+  const [busCompanies, setBusCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingBus, setEditingBus] = useState(null);
-  const [formData, setFormData] = useState({ plateNumber: '', capacity: '', status: 'ACTIVE' });
+  const [formData, setFormData] = useState({ plateNumber: '', capacity: '', status: 'ACTIVE', busType: 'Standard', busCompanyId: '' });
 
-  useEffect(() => { loadBuses(); }, []);
+  useEffect(() => { 
+    loadBuses(); 
+    loadBusCompanies();
+  }, []);
 
   const loadBuses = async () => {
     try {
@@ -29,12 +33,20 @@ const Buses = () => {
     finally { setLoading(false); }
   };
 
+  const loadBusCompanies = async () => {
+    try {
+      const response = await busCompaniesAPI.getAll();
+      setBusCompanies(response.data || []);
+    } catch { console.error('Failed to load bus companies'); }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const payload = {
         ...formData,
         capacity: Number(formData.capacity),
+        busCompanyId: formData.busCompanyId || null,
       };
       if (editingBus) {
         await busesAPI.update(editingBus.id, payload);
@@ -45,14 +57,20 @@ const Buses = () => {
       }
       setShowModal(false);
       setEditingBus(null);
-      setFormData({ plateNumber: '', capacity: '', status: 'ACTIVE' });
+      setFormData({ plateNumber: '', capacity: '', status: 'ACTIVE', busType: 'Standard', busCompanyId: '' });
       loadBuses();
     } catch { toast.error('Failed to save bus'); }
   };
 
   const handleEdit = (bus) => {
     setEditingBus(bus);
-    setFormData({ plateNumber: bus.plateNumber || '', capacity: bus.capacity || '', status: bus.status || 'ACTIVE' });
+    setFormData({ 
+      plateNumber: bus.plateNumber || '', 
+      capacity: bus.capacity || '', 
+      status: bus.status || 'ACTIVE',
+      busType: bus.busType || 'Standard',
+      busCompanyId: bus.busCompany?.id || ''
+    });
     setShowModal(true);
   };
 
@@ -82,7 +100,7 @@ const Buses = () => {
             <p className="text-sm text-[#6B7280] mt-0.5">Manage all buses in the fleet</p>
           </div>
           <button
-            onClick={() => { setEditingBus(null); setFormData({ plateNumber: '', capacity: '', status: 'ACTIVE' }); setShowModal(true); }}
+            onClick={() => { setEditingBus(null); setFormData({ plateNumber: '', capacity: '', status: 'ACTIVE', busType: 'Standard', busCompanyId: '' }); setShowModal(true); }}
             className="inline-flex items-center gap-2 text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:opacity-90 transition-all"
             style={{ background: '#6C63FF' }}
           >
@@ -137,6 +155,17 @@ const Buses = () => {
                     <div className="flex items-center gap-2 text-[#6B7280]">
                       <Users className="w-3.5 h-3.5" /><span>{bus.capacity} seats</span>
                     </div>
+                    {bus.busType && (
+                      <div className="flex items-center gap-2 text-[#6B7280]">
+                        <span>{bus.busType}</span>
+                      </div>
+                    )}
+                    {bus.busCompany && (
+                      <div className="flex items-center gap-2 text-[#6B7280]">
+                        <Building2 className="w-3.5 h-3.5" />
+                        <span>{bus.busCompany.name}</span>
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <Activity className="w-3.5 h-3.5" style={{ color: '#6B7280' }} />
                       <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full" style={{ background: sc.bg, color: sc.text }}>
@@ -163,6 +192,27 @@ const Buses = () => {
                 <div>
                   <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1.5 block">Capacity</label>
                   <input type="number" value={formData.capacity} onChange={(e) => setFormData({ ...formData, capacity: e.target.value })} className={inputCls} required />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1.5 block">Bus Type</label>
+                  <select value={formData.busType} onChange={(e) => setFormData({ ...formData, busType: e.target.value })} className={inputCls}>
+                    <option value="Standard">Standard</option>
+                    <option value="Express">Express</option>
+                    <option value="Luxury">Luxury</option>
+                    <option value="Mini-bus">Mini-bus</option>
+                    <option value="Coach">Coach</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1.5 block">Bus Company</label>
+                  <select value={formData.busCompanyId} onChange={(e) => setFormData({ ...formData, busCompanyId: e.target.value })} className={inputCls}>
+                    <option value="">No Company</option>
+                    {busCompanies.map((company) => (
+                      <option key={company.id} value={company.id}>
+                        {company.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1.5 block">Status</label>

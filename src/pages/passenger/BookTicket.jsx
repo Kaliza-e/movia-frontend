@@ -6,7 +6,7 @@ import { Layout } from '../../components/Layout';
 import { getRouteName, getUserId, normalizeBookedSeats } from '../../utils/data';
 import {
   Search, MapPin, Clock, Bus, ArrowRight,
-  Check, ChevronRight,
+  Check, ChevronRight, Building2,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import confetti from 'canvas-confetti';
@@ -32,6 +32,11 @@ const mapSearchResultToSchedule = (result) => ({
   bus: {
     plateNumber: result.busPlateNumber,
     capacity: result.busCapacity || 40,
+    busType: result.busType || 'Standard',
+    busCompany: {
+      id: result.busCompanyId,
+      name: result.busCompanyName || 'Unknown',
+    },
   },
   route: {
     id: result.routeId,
@@ -40,6 +45,7 @@ const mapSearchResultToSchedule = (result) => ({
     price: result.price,
   },
   availableSeats: result.availableSeats,
+  driverName: result.driverName,
 });
 
 const BookTicket = () => {
@@ -99,11 +105,12 @@ const BookTicket = () => {
     }
     setLoading(true);
     try {
-      const response = await searchAPI.searchRoutes(from, to, travelDate || undefined);
+      // First get grouped routes
+      const response = await searchAPI.getRoutesGroupedByBusCompanies(from, to);
       const data = response.data || [];
 
       if (data.length === 0) {
-        toast.error('No available trips found for this route and date.');
+        toast.error('No available trips found for this route.');
         setSearchResults([]);
         setUsedSearch(false);
         return;
@@ -111,21 +118,9 @@ const BookTicket = () => {
 
       setSearchResults(data);
       setUsedSearch(true);
-
-      const routeMap = new Map();
-      data.forEach((item) => {
-        if (!routeMap.has(item.routeId)) {
-          routeMap.set(item.routeId, {
-            id: item.routeId,
-            departureLocation: item.departureLocation,
-            destinationLocation: item.destinationLocation,
-            price: item.price,
-          });
-        }
-      });
-      setRoutes([...routeMap.values()]);
+      setRoutes(data);
       setStep(2);
-      toast.success(`Found ${data.length} available trip${data.length > 1 ? 's' : ''}`);
+      toast.success(`Found available companies for this route`);
     } catch {
       toast.error('Search failed. Please try again.');
     } finally {
@@ -136,7 +131,8 @@ const BookTicket = () => {
   const browseAllRoutes = async () => {
     setLoading(true);
     try {
-      const response = await routesAPI.getAll();
+      // Pass empty strings to get all routes grouped by bus companies
+      const response = await searchAPI.getRoutesGroupedByBusCompanies('', '');
       const data = response.data || [];
       setRoutes(data);
       setSearchResults([]);
@@ -149,35 +145,30 @@ const BookTicket = () => {
     }
   };
 
-  const loadSchedules = async (route) => {
+  const loadSchedules = async (route, companyId) => {
     setSelectedRoute(route);
     setLoading(true);
     try {
-      let data = [];
+      // Fetch specific schedules for this route and company
+      // This requires the standard searchRoutes but filtered by company
+      const response = await searchAPI.searchRoutes(route.departureLocation, route.destinationLocation, travelDate || undefined);
+      let data = response.data || [];
+      
+      data = data.filter(item => item.busCompanyId === companyId);
+      
+      const mappedSchedules = data.map(mapSearchResultToSchedule);
 
-      if (usedSearch) {
-        data = searchResults
-          .filter((item) => item.routeId === route.id)
-          .map(mapSearchResultToSchedule);
-      } else {
-        const response = await schedulesAPI.getByRoute(route.id);
-        data = (response.data || []).filter((schedule) => {
-          const departure = schedule.departureTime ? new Date(schedule.departureTime) : null;
-          return !departure || departure > new Date();
-        });
-      }
-
-      if (data.length === 0) {
-        toast.error('No upcoming schedules for this route.');
+      if (mappedSchedules.length === 0) {
+        toast.error('No upcoming schedules for this company on this route.');
         setSchedules([]);
         return;
       }
 
-      setSchedules(data);
-      await loadBookedSeatsForSchedules(data);
+      setSchedules(mappedSchedules);
+      await loadBookedSeatsForSchedules(mappedSchedules);
       setStep(3);
     } catch {
-      toast.error('Unable to load schedules for this route.');
+      toast.error('Unable to load schedules.');
     } finally {
       setLoading(false);
     }
@@ -391,32 +382,56 @@ const BookTicket = () => {
                 No routes found. Try a different search.
               </div>
             ) : (
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-6">
                 {routes.map((route) => (
-                  <div
-                    key={route.id}
-                    onClick={() => loadSchedules(route)}
-                    className="bg-white rounded-[16px] p-5 cursor-pointer hover:-translate-y-1 transition-all duration-200"
-                    style={{ boxShadow: '0 2px 16px rgba(108,99,255,0.07)' }}
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: '#EEF0FF' }}>
-                        <Bus className="w-5 h-5" style={{ color: '#6C63FF' }} />
+                  <div key={route.routeId} className="space-y-4">
+                    <h3 className="font-bold text-[#1A1A2E] text-lg border-b pb-2">
+                      {route.departureLocation} → {route.destinationLocation}
+                    </h3>
+                    
+                    {route.busCompanies?.length === 0 ? (
+                      <p className="text-sm text-[#6B7280]">No bus companies available for this route.</p>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2">
+                        {route.busCompanies?.map((company) => (
+                          <div
+                            key={company.companyId}
+                            onClick={() => loadSchedules({ departureLocation: route.departureLocation, destinationLocation: route.destinationLocation, id: route.routeId }, company.companyId)}
+                            className="bg-white rounded-[16px] p-5 cursor-pointer hover:-translate-y-1 transition-all duration-200"
+                            style={{ boxShadow: '0 2px 16px rgba(108,99,255,0.07)' }}
+                          >
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gray-50 border border-gray-100">
+                                  {company.logoUrl ? (
+                                    <img src={company.logoUrl} alt={company.companyName} className="w-8 h-8 object-contain" />
+                                  ) : (
+                                    <Building2 className="w-6 h-6 text-[#6C63FF]" />
+                                  )}
+                                </div>
+                                <h4 className="font-bold text-[#1A1A2E] text-md">
+                                  {company.companyName}
+                                </h4>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-2 mt-3 pt-3 border-t border-gray-50">
+                              <p className="text-xs font-semibold text-[#6B7280] uppercase tracking-wider mb-2">Available Bus Types</p>
+                              {company.busTypes?.map(type => (
+                                <div key={type.busType} className="flex justify-between items-center text-sm">
+                                  <span className="flex items-center gap-2"><Bus className="w-3.5 h-3.5 text-[#6B7280]" /> {type.busType}</span>
+                                  <span className="font-semibold text-[#6C63FF]">RWF {type.averagePrice?.toLocaleString()}</span>
+                                </div>
+                              ))}
+                            </div>
+                            
+                            <div className="flex items-center gap-1 mt-4 text-xs font-semibold" style={{ color: '#6C63FF' }}>
+                              View Schedules <ChevronRight className="w-3.5 h-3.5" />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                      <span className="text-xl font-bold" style={{ color: '#6C63FF' }}>
-                        RWF {(route.price || 0).toLocaleString()}
-                      </span>
-                    </div>
-                    <h4 className="font-bold text-[#1A1A2E] mb-3 text-sm">
-                      {getRouteName(route)}
-                    </h4>
-                    <div className="space-y-1.5 text-xs text-[#6B7280]">
-                      <div className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5" />{route.distanceKm || route.distance || '—'} km</div>
-                      <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5" />{route.estimatedDurationMinutes || route.duration || '—'} mins</div>
-                    </div>
-                    <div className="flex items-center gap-1 mt-3 text-xs font-semibold" style={{ color: '#6C63FF' }}>
-                      Select <ChevronRight className="w-3.5 h-3.5" />
-                    </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -456,8 +471,17 @@ const BookTicket = () => {
                             <ArrowRight className="w-4 h-4 text-[#6B7280]" />
                             <span>{schedule.arrivalTime ? new Date(schedule.arrivalTime).toLocaleString() : 'TBD'}</span>
                           </div>
-                          <div className="flex gap-5 text-xs text-[#6B7280]">
+                          <div className="flex flex-wrap gap-3 text-xs text-[#6B7280]">
                             <span className="flex items-center gap-1.5"><Bus className="w-3.5 h-3.5" />{schedule.bus?.plateNumber || 'Bus TBD'}</span>
+                            {schedule.bus?.busCompany && (
+                              <span className="flex items-center gap-1.5"><Building2 className="w-3.5 h-3.5" />{schedule.bus.busCompany.name}</span>
+                            )}
+                            {schedule.bus?.busType && (
+                              <span className="flex items-center gap-1.5">{schedule.bus.busType}</span>
+                            )}
+                            {schedule.driverName && (
+                              <span className="flex items-center gap-1.5">Driver: {schedule.driverName}</span>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-center gap-3">

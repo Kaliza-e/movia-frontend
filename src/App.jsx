@@ -3,6 +3,7 @@ import  Login  from  './pages/Login';
 import  Register  from './pages/Register';
 import  LiveTracking from './pages/LiveTracking';
 import PassengerDashboard from './pages/passenger/Dashboard';
+import PassengerNotifications from './pages/passenger/Notifications';
 import DriverDashboard from './pages/driver/Dashboard';
 import DriverSchedules from './pages/driver/Schedules';
 import AdminDashboard from './pages/admin/Dashboard';
@@ -11,6 +12,7 @@ import AdminBuses from './pages/admin/Buses';
 import AdminSchedules from './pages/admin/Schedules';
 import AdminDrivers from './pages/admin/Drivers';
 import AdminBookings from './pages/admin/Bookings';
+import AdminBusCompanies from './pages/admin/BusCompanies';
 import BookTicket from './pages/passenger/BookTicket';
 import MyTickets from './pages/passenger/MyTickets';
 import MyTrips from './pages/driver/MyTrips';
@@ -51,6 +53,7 @@ function App() {
       {/* PASSENGER ONLY */}
       <Route path="/book" element={<ProtectedRoute allowedRoles={['PASSENGER']}><BookTicket/></ProtectedRoute>} />
       <Route path="/myTickets" element={<ProtectedRoute allowedRoles={['PASSENGER']}><MyTickets/></ProtectedRoute>} />
+      <Route path="/notifications" element={<ProtectedRoute allowedRoles={['PASSENGER']}><PassengerNotifications/></ProtectedRoute>} />
       <Route path="/ussd" element={<USSDSimulator/>} />
 
       {/* DRIVER ONLY */}
@@ -65,6 +68,7 @@ function App() {
       <Route path="/admin/schedules" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminSchedules /></ProtectedRoute>} />
       <Route path="/admin/drivers" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminDrivers/></ProtectedRoute>} />
       <Route path="/admin/bookings" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminBookings /></ProtectedRoute>} />
+      <Route path="/admin/bus-companies" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminBusCompanies /></ProtectedRoute>} />
 
       {/* DEFAULT */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
